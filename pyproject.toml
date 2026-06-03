@@ -1,17 +1,18 @@
 [project]
 name = "dgm-mcp"
-version = "0.1.0"
-description = "MCP Server for secure LLM-driven software engineering"
-authors = [{ name = "Andre Vazao" }]
+version = "0.1.4"
+description = "MCP Server seguro para LLM-driven Software Engineering"
+authors = [{ name = "Andre Vazao", email = "your@email.com" }]
 requires-python = ">=3.10"
 dependencies = [
-    "pyyaml",
-    "pydantic",
-    "rich",
-    "watchdog",
-    "fastapi",
-    "uvicorn[standard]",
-    "click"
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "rich>=13.0",
+    "fastapi>=0.100",
+    "uvicorn[standard]>=0.20",
+    "openai>=1.0",
+    "anthropic>=0.20",
+    "google-generativeai>=0.5",
 ]
 
 [project.scripts]
