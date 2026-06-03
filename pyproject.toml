@@ -1,0 +1,18 @@
+[project]
+name = "dgm-mcp"
+version = "0.1.0"
+description = "MCP Server for secure LLM-driven software engineering"
+authors = [{ name = "Andre Vazao" }]
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml",
+    "pydantic",
+    "rich",
+    "watchdog",
+]
+
+[project.scripts]
+dgm-mcp = "dgm_mcp.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
