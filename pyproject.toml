@@ -9,6 +9,9 @@ dependencies = [
     "pydantic",
     "rich",
     "watchdog",
+    "fastapi",
+    "uvicorn[standard]",
+    "click"
 ]
 
 [project.scripts]

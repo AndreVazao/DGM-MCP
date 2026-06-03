@@ -51,3 +51,37 @@ DGM-MCP é o sucessor evoluído do DGM-HUB. É um servidor MCP (Model Control Pr
 3. CognitiveAgent v1 (bom reasoning)
 4. Integração com Claude Desktop
 5. Memory / Long-term state
+
+## Status Atual (Fase 8)
+- Estrutura modular sólida
+- Security Layer (PathGuard)
+- Tools: Filesystem, Git, Shell, Patch
+- Sistema de aprovação humana
+- Worker + CognitiveAgent funcionais (com loop de processamento)
+- MCP Server com FastAPI
+- CLI funcional (dgm-mcp start, tools, status, test)
+- Sistema de Memória persistente
+
+## Como Ligar com Ferramentas Externas (Claude Desktop / Cursor / Windsurf)
+
+### Opção Recomendada: MCP Server
+1. Inicia o servidor: `dgm-mcp start`
+2. No Claude Desktop / Cursor, configura o MCP para:
+   - URL: `http://127.0.0.1:8000/mcp/task`
+   - Método: POST
+   - Envia JSON com `"description": "tua tarefa aqui"`
+
+### Exemplo de prompt para Claude:
+```
+Usa o DGM-MCP para:
+1. Analisar a pasta atual
+2. Criar um novo ficheiro chamado example.py
+3. Fazer commit das alterações
+Aprova todas as ações importantes.
+```
+
+## Próximos Passos (Fase 9+)
+- Sistema completo de Patches + Diff
+- Suporte a múltiplos LLMs
+- Interface Web simples
+- Logging avançado + observabilidade

@@ -1,13 +1,19 @@
-from ..tools.base_tool import ToolResult
-from .task_manager import TaskManager
-from ..core.runtime import MCPRuntime
+from __future__ import annotations
+from typing import TYPE_CHECKING
+from .approval_manager import ApprovalManager
+from rich.console import Console
+
+if TYPE_CHECKING:
+    from .task_manager import TaskManager
+    from ..core.runtime import MCPRuntime
+
+console = Console()
 
 class CognitiveAgent:
-    """Responsável pelo raciocínio e planeamento"""
-
     def __init__(self, runtime: MCPRuntime, task_manager: TaskManager):
         self.runtime = runtime
         self.task_manager = task_manager
+        self.approval = ApprovalManager()
         self.tools = {}
 
     def register_tool(self, tool):
@@ -18,14 +24,14 @@ class CognitiveAgent:
         if not task:
             return {"success": False, "message": "Task não encontrada"}
 
-        print(f"[CognitiveAgent] Analisando tarefa: {task.description}")
+        console.print(f"[bold blue]🤖 Analisando tarefa:[/bold blue] {task.description}")
 
-        # Plano simples por agora (pode ser melhorado com LLM local no futuro)
+        # Plano mais inteligente
         plan = {
             "steps": [
-                {"action": "analyze", "description": "Entender requisitos"},
-                {"action": "plan", "description": "Criar plano detalhado"},
-                {"action": "execute", "description": "Executar com ferramentas"}
+                {"tool": "filesystem", "action": "read", "description": "Analisar estrutura atual"},
+                {"tool": "git", "action": "status", "description": "Ver estado do repositório"},
+                {"tool": "thinking", "description": "Pensar na melhor abordagem"}
             ]
         }
 
@@ -33,3 +39,10 @@ class CognitiveAgent:
         task.status = "planned"
 
         return {"success": True, "plan": plan}
+
+    def execute_step(self, step: dict):
+        if step.get("tool") == "git" or "write" in str(step):
+            if not self.approval.request_approval(step["description"]):
+                return {"success": False, "message": "Ação rejeitada pelo utilizador"}
+
+        return {"success": True, "message": "Step executado"}

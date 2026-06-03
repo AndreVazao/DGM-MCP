@@ -1,0 +1,6 @@
+allowed_paths:
+- ./
+- ../projects
+enable_approval: true
+log_level: INFO
+max_workers: 4
