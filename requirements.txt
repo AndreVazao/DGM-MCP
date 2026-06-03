@@ -1,0 +1,6 @@
+pyyaml
+pydantic
+rich
+watchdog
+fastapi
+uvicorn[standard]
