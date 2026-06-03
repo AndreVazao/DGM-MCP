@@ -10,6 +10,7 @@ from ..control.cognitive_agent import CognitiveAgent
 from ..llm.llm_manager import LLMManager
 from .memory import Memory
 from .logger import DGMLogger
+from .observability import Observability
 from rich.console import Console
 
 console = Console()
@@ -27,6 +28,7 @@ class MCPRuntime:
         self.memory = None
         self.llm_manager = LLMManager()
         self.logger = DGMLogger()
+        self.observability = Observability()
 
     def start(self):
         self.running = True

@@ -104,3 +104,41 @@ Podes configurar o MCP como tool customizada.
 
 ### Ollama Local
 Funciona sem API key.
+
+## Integração com LLMs Externos (Recomendado)
+
+### Claude Desktop / Cursor / Windsurf
+- URL: `http://127.0.0.1:8000/mcp/task`
+- Método: `POST`
+- Body JSON: `{"description": "tua tarefa", "session_id": "opcional"}`
+
+### VS Code + Continue.dev ou Aider
+Podes configurar o MCP como tool customizada.
+
+### Ollama Local
+Funciona sem API key.
+
+## Fase 13 — Status Atual (v0.1.4)
+
+- Multi-LLM completo (ChatGPT, Claude, Grok, Gemini, Ollama)
+- Sistema de aprovação rico com preview
+- Worker em thread
+- Observability / Dashboard
+- Sessões de contexto
+- Patch system avançado
+
+**Pronto para integração real com Claude Desktop, Cursor, VS Code, etc.**
+
+## Checklist de Produção (v0.1.4)
+
+- [x] Multi-LLM completo
+- [x] PathGuard + Security
+- [x] Sistema de aprovação humana
+- [x] Worker em thread
+- [x] Patch Tool com preview
+- [x] Logging rico
+- [x] CLI completa (start, test, tools, dashboard)
+- [x] Testes básicos
+- [ ] Integração real com Claude Desktop (testar)
+- [ ] Melhor error recovery
+- [ ] Logging para ficheiro

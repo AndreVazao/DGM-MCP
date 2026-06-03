@@ -1,15 +1,27 @@
 from rich.console import Console
+from rich.panel import Panel
 from rich.prompt import Confirm
+from rich.table import Table
+from datetime import datetime
 
 console = Console()
 
 class ApprovalManager:
-    """Gerencia aprovações humanas para ações críticas"""
+    def request_approval(self, action_description: str, details: str = "", risk_level: str = "medium") -> bool:
+        console.print(Panel.fit(
+            f"[bold yellow]⚠️  REQUER APROVAÇÃO HUMANA[/bold yellow]\n\n"
+            f"[white]Ação:[/white] {action_description}\n"
+            f"[white]Risco:[/white] [red]{risk_level.upper()}[/red]",
+            title="DGM-MCP • Approval",
+            border_style="yellow"
+        ))
 
-    def request_approval(self, action_description: str, details: str = "") -> bool:
-        console.print(f"\n[bold yellow]⚠️  AÇÃO CRÍTICA DETETADA[/bold yellow]")
-        console.print(f"Descrição: {action_description}")
         if details:
-            console.print(f"Detalhes:\n{details}")
+            console.print(f"[dim]{details}[/dim]")
 
-        return Confirm.ask("Deseja aprovar esta ação?", default=False)
+        console.print("\n[yellow]Esta ação vai modificar o sistema.[/yellow]")
+
+        return Confirm.ask(
+            "[bold]Deseja aprovar esta ação?[/bold]",
+            default=False
+        )

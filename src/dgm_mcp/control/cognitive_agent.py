@@ -90,21 +90,39 @@ class CognitiveAgent:
         if tool_name in self.tools:
             tool = self.tools[tool_name]
 
-            if step.get("needs_approval", False) or "write" in str(step).lower():
+            needs_approval = (
+                step.get("needs_approval") is True or
+                step.get("risk_level") in ["medium", "high"] or
+                any(x in str(step).lower() for x in ["write", "delete", "commit", "patch"])
+            )
+
+            if needs_approval:
                 approved = self.approval.request_approval(
-                    action_description=step.get("description", ""),
-                    details=f"Tool: {tool_name}"
+                    action_description=step.get("description", tool_name),
+                    details=f"Tool: {tool_name} | Step: {step}",
+                    risk_level=step.get("risk_level", "medium")
                 )
                 if not approved:
                     return {"success": False, "message": "Ação rejeitada pelo utilizador"}
 
-            # Executar tool (futuramente com parâmetros dinâmicos)
             result = tool.execute(**step)
-
-            if hasattr(result, 'success'):
-                return {"success": result.success, "message": result.message, "data": getattr(result, 'data', {})}
-            return result
+            return result.model_dump() if hasattr(result, "model_dump") else result
         else:
             if tool_name == "thinking":
                 return {"success": True, "message": "Thinking completed"}
-            return {"success": False, "message": f"Tool {tool_name} não encontrada"}
+            return {"success": False, "message": f"Tool '{tool_name}' não encontrada"}
+
+    def stream_thinking(self, task_id: str):
+        """Simula pensamento passo a passo com LLM"""
+        task = self.task_manager.get_task(task_id)
+        console.print("[bold magenta]🤔 Pensando...[/bold magenta]")
+
+        prompt = f"Pensa passo a passo sobre: {task.description}"
+        response = self.llm.generate(
+            prompt=prompt,
+            system_prompt=Prompts.SYSTEM_ENGINEER
+        )
+
+        if response.success:
+            console.print(f"[italic]{response.content[:400]}...[/italic]")
+        return response

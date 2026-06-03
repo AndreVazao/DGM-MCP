@@ -1,5 +1,6 @@
 import click
 from rich.console import Console
+from rich.panel import Panel
 import time
 import threading
 
@@ -53,6 +54,26 @@ def status():
     console.print("\n[bold]📊 Status do DGM-MCP:[/bold]")
     console.print(f"   Running: [green]{runtime.running}[/green]")
     console.print(f"   Allowed Paths: [cyan]{config.allowed_paths}[/cyan]")
+
+@cli.command()
+def dashboard():
+    """Mostra dashboard em tempo real"""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    runtime.observability.show_dashboard(runtime)
+
+@cli.command()
+def example():
+    """Mostra exemplos de uso"""
+    console.print(Panel.fit(
+        "[bold green]Exemplos de uso do DGM-MCP[/bold green]\n\n"
+        "1. Analisar projeto:\n   → 'Analisa a estrutura do projeto e sugere melhorias'\n\n"
+        "2. Criar feature:\n   → 'Cria um endpoint /users com FastAPI'\n\n"
+        "3. Refatorar código:\n   → 'Refatora o arquivo main.py para usar async'\n\n"
+        "4. Debug:\n   → 'Encontra e corrige o bug no módulo auth'",
+        title="📋 Exemplos"
+    ))
 
 @cli.command()
 def test():

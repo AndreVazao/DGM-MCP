@@ -1,26 +1,23 @@
-from typing import Dict
-
 class Prompts:
-    """System prompts e templates bem estruturados"""
-
     SYSTEM_ENGINEER = """
-    És um engenheiro de software sénior extremamente competente, cuidadoso e seguro.
-    Trabalhas sempre com aprovação humana para alterações.
-    Pensa passo a passo, sê claro, usa boas práticas e prioriza segurança.
+    És um engenheiro de software sénior, meticuloso, seguro e orientado para qualidade.
+    Segue sempre as melhores práticas, pensa passo a passo e pede aprovação humana antes de qualquer alteração significativa.
     """
 
     TASK_ANALYSIS = """
-    Analisa a seguinte tarefa e cria um plano detalhado:
+    Analisa esta tarefa com cuidado e devolve um plano detalhado em JSON:
 
     Tarefa: {task_description}
 
-    Devolve a resposta no seguinte formato JSON:
-    {
-      "summary": "resumo curto da tarefa",
+    Responde **apenas** com JSON válido no seguinte formato:
+    ```json
+    {{
+      "summary": "resumo da tarefa",
       "steps": [
-        {"tool": "nome_da_tool", "action": "ação", "description": "descrição clara"}
+        {{"tool": "patch", "action": "preview_write", "file_path": "caminho", "description": "...", "risk_level": "medium"}}
       ],
       "risk_level": "low|medium|high",
-      "needs_approval": true|false
-    }
+      "needs_approval": true
+    }}
+    ```
     """
