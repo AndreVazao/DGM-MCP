@@ -1,6 +1,8 @@
-pyyaml
-pydantic
-rich
-watchdog
 fastapi
 uvicorn[standard]
+rich
+pydantic
+pyyaml
+watchdog
+click
+pytest
