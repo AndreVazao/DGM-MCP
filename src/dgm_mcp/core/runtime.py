@@ -9,6 +9,7 @@ from ..control.worker import Worker
 from ..control.cognitive_agent import CognitiveAgent
 from ..llm.llm_manager import LLMManager
 from .memory import Memory
+from .logger import DGMLogger
 from rich.console import Console
 
 console = Console()
@@ -25,10 +26,11 @@ class MCPRuntime:
         self.console = console
         self.memory = None
         self.llm_manager = LLMManager()
+        self.logger = DGMLogger()
 
     def start(self):
         self.running = True
-        console.print("[bold green]🚀 MCP Runtime iniciado[/bold green]")
+        self.logger.success("MCP Runtime iniciado")
 
         # Registar todas as tools
         self._register_tools()
@@ -36,7 +38,7 @@ class MCPRuntime:
         # LLM Manager
         config_llm = getattr(self.config, 'default_llm', 'Claude')
         self.llm_manager.set_provider(config_llm)
-        console.print(f"   🤖 LLM padrão configurado: [bold]{config_llm}[/bold]")
+        self.logger.info(f"LLM padrão configurado: {config_llm}")
 
         # Inicializar Agent e Worker
         self.agent = CognitiveAgent(self, self.task_manager)
@@ -48,7 +50,7 @@ class MCPRuntime:
 
         # Inicializar Memory
         self.memory = Memory(self)
-        console.print("   ✅ Memory system carregado")
+        self.logger.success("Memory system carregado")
 
         self.worker.start()
 
@@ -61,8 +63,8 @@ class MCPRuntime:
         ]
         for tool in tools:
             self.tools[tool.name] = tool
-            console.print(f"   ✅ Tool carregada: [cyan]{tool.name}[/cyan]")
+            self.logger.success(f"Tool carregada: {tool.name}")
 
     def stop(self):
         self.running = False
-        console.print("[yellow]⛔ Runtime parado[/yellow]")
+        self.logger.warning("Runtime parado")

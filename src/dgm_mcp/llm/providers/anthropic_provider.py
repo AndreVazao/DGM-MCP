@@ -1,5 +1,4 @@
 import os
-from anthropic import Anthropic
 from ..base_provider import BaseLLMProvider, LLMResponse
 
 class AnthropicProvider(BaseLLMProvider):
@@ -7,15 +6,23 @@ class AnthropicProvider(BaseLLMProvider):
     model = "claude-3-5-sonnet-20240620"
 
     def __init__(self):
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        self.client = Anthropic(api_key=api_key) if api_key else None
+        try:
+            from anthropic import Anthropic
+            api_key = os.getenv("ANTHROPIC_API_KEY")
+            self.client = Anthropic(api_key=api_key) if api_key else None
+        except ImportError:
+            self.client = None
 
     def is_available(self) -> bool:
-        return bool(os.getenv("ANTHROPIC_API_KEY"))
+        try:
+            import anthropic
+            return bool(os.getenv("ANTHROPIC_API_KEY"))
+        except ImportError:
+            return False
 
     def generate(self, prompt: str, system_prompt: str = None, **kwargs):
         if not self.client:
-            return LLMResponse("Anthropic API key not set", self.model, False)
+            return LLMResponse("Anthropic library not installed or API key not set", self.model, False)
         try:
             response = self.client.messages.create(
                 model=self.model,
