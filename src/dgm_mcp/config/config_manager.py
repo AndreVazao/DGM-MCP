@@ -1,12 +1,15 @@
 from pathlib import Path
 import yaml
 from pydantic import BaseModel
+from typing import Optional
 
 class MCPConfig(BaseModel):
     allowed_paths: list[str] = ["./", "../projects"]
     max_workers: int = 4
     log_level: str = "INFO"
     enable_approval: bool = True
+    default_llm: str = "Claude"
+    ollama_model: str = "llama3.2"
 
 class ConfigManager:
     def __init__(self):

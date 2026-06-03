@@ -1,6 +1,11 @@
 allowed_paths:
-- ./
-- ../projects
-enable_approval: true
-log_level: INFO
+  - "./"
+  - "../projects"
+  - "."
+
 max_workers: 4
+log_level: INFO
+enable_approval: true
+
+default_llm: "Claude"
+ollama_model: "llama3.2"
