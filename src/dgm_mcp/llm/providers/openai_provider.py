@@ -1,5 +1,4 @@
 import os
-from openai import OpenAI
 from ..base_provider import BaseLLMProvider, LLMResponse
 
 class OpenAIProvider(BaseLLMProvider):
@@ -7,15 +6,23 @@ class OpenAIProvider(BaseLLMProvider):
     model = "gpt-4o"
 
     def __init__(self):
-        api_key = os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=api_key) if api_key else None
+        try:
+            from openai import OpenAI
+            api_key = os.getenv("OPENAI_API_KEY")
+            self.client = OpenAI(api_key=api_key) if api_key else None
+        except ImportError:
+            self.client = None
 
     def is_available(self) -> bool:
-        return bool(os.getenv("OPENAI_API_KEY"))
+        try:
+            import openai
+            return bool(os.getenv("OPENAI_API_KEY"))
+        except ImportError:
+            return False
 
     def generate(self, prompt: str, system_prompt: str = None, **kwargs):
         if not self.client:
-            return LLMResponse("OpenAI API key not set", self.model, False)
+            return LLMResponse("OpenAI library not installed or API key not set", self.model, False)
         try:
             messages = []
             if system_prompt:

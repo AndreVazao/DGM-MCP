@@ -85,3 +85,22 @@ Aprova todas as ações importantes.
 - Suporte a múltiplos LLMs
 - Interface Web simples
 - Logging avançado + observabilidade
+
+## Fase 11 Status
+- LLM integration completa (ChatGPT, Claude, Grok, Gemini, Ollama)
+- Advanced Patch + Preview System
+- Centralized Logging
+- Plan Execution Engine
+
+## Integração com LLMs Externos (Recomendado)
+
+### Claude Desktop / Cursor / Windsurf
+- URL: `http://127.0.0.1:8000/mcp/task`
+- Método: `POST`
+- Body JSON: `{"description": "tua tarefa", "session_id": "opcional"}`
+
+### VS Code + Continue.dev ou Aider
+Podes configurar o MCP como tool customizada.
+
+### Ollama Local
+Funciona sem API key.

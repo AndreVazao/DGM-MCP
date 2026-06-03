@@ -23,19 +23,25 @@ class MCPServer:
         async def create_task(request: Request):
             data = await request.json()
             description = data.get("description")
+            session_id = data.get("session_id")
 
             if not description:
-                return {"status": "error", "message": "Description is required"}
+                return {"status": "error", "message": "description is required"}
 
             task = self.task_manager.create_task(description)
+
+            # Ligar com sessão
+            if not session_id or session_id not in self.agent.sessions:
+                session_id = self.agent.create_session()
+
             result = self.agent.analyze_task(task.id)
 
-            console.print(f"[green]Nova tarefa recebida: {task.id}[/green]")
+            console.print(f"[green]Tarefa recebida → {task.id} (Session: {session_id})[/green]")
 
             return {
                 "status": "success",
                 "task_id": task.id,
-                "message": "Tarefa criada com sucesso",
+                "session_id": session_id,
                 "plan": result.get("plan")
             }
 
