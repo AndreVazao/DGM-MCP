@@ -7,6 +7,7 @@ from ..tools.patch_tool import PatchTool
 from ..control.task_manager import TaskManager
 from ..control.worker import Worker
 from ..control.cognitive_agent import CognitiveAgent
+from ..llm.llm_manager import LLMManager
 from .memory import Memory
 from rich.console import Console
 
@@ -23,6 +24,7 @@ class MCPRuntime:
         self.worker = None
         self.console = console
         self.memory = None
+        self.llm_manager = LLMManager()
 
     def start(self):
         self.running = True
@@ -30,6 +32,11 @@ class MCPRuntime:
 
         # Registar todas as tools
         self._register_tools()
+
+        # LLM Manager
+        config_llm = getattr(self.config, 'default_llm', 'Claude')
+        self.llm_manager.set_provider(config_llm)
+        console.print(f"   🤖 LLM padrão configurado: [bold]{config_llm}[/bold]")
 
         # Inicializar Agent e Worker
         self.agent = CognitiveAgent(self, self.task_manager)
