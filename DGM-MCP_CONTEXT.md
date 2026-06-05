@@ -142,3 +142,17 @@ Funciona sem API key.
 - [ ] Integração real com Claude Desktop (testar)
 - [ ] Melhor error recovery
 - [ ] Logging para ficheiro
+
+## Checklist de Produção (v0.1.5)
+
+- [x] Multi-LLM completo
+- [x] PathGuard + Security
+- [x] Sistema de aprovação humana
+- [x] Worker em thread
+- [x] Patch Tool com preview
+- [x] Logging rico
+- [x] CLI completa (start, test, tools, dashboard)
+- [x] Testes básicos
+- [ ] Integração real com Claude Desktop (testar)
+- [ ] Melhor error recovery
+- [ ] Logging para ficheiro

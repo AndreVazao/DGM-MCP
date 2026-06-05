@@ -1,8 +1,5 @@
 import click
 from rich.console import Console
-from rich.panel import Panel
-import time
-import threading
 
 from .core.runtime import MCPRuntime
 from .config.config_manager import ConfigManager
@@ -15,15 +12,12 @@ def cli():
 
 @cli.command()
 def start():
-    """Inicia o DGM-MCP Server completo"""
+    """Inicia o DGM-MCP Server"""
     console.print("[bold green]🚀 Iniciando DGM-MCP...[/bold green]")
 
     config = ConfigManager().load()
     runtime = MCPRuntime(config)
-
-    # Iniciar o worker numa thread separada
-    worker_thread = threading.Thread(target=runtime.start, daemon=True)
-    worker_thread.start()
+    runtime.start()
 
     from .bridge.mcp_server import MCPServer
     server = MCPServer(runtime)
@@ -31,70 +25,48 @@ def start():
     try:
         server.start()
     except KeyboardInterrupt:
-        console.print("[yellow]Encerrando DGM-MCP...[/yellow]")
+        console.print("[yellow]Encerrando...[/yellow]")
         runtime.stop()
     except Exception as e:
-        console.print(f"[bold red]Erro crítico: {e}[/bold red]")
+        console.print(f"[bold red]Erro: {e}[/bold red]")
 
 @cli.command()
 def tools():
-    """Lista todas as ferramentas disponíveis"""
-    config = ConfigManager().load()
-    runtime = MCPRuntime(config)
-    runtime._register_tools()
-    console.print("\n[bold]🔧 Ferramentas Disponíveis:[/bold]")
-    for name, tool in runtime.tools.items():
-        console.print(f"   • [cyan]{name:15}[/cyan] → {tool.description}")
-
-@cli.command()
-def status():
-    """Mostra o estado atual do runtime"""
-    config = ConfigManager().load()
-    runtime = MCPRuntime(config)
-    console.print("\n[bold]📊 Status do DGM-MCP:[/bold]")
-    console.print(f"   Running: [green]{runtime.running}[/green]")
-    console.print(f"   Allowed Paths: [cyan]{config.allowed_paths}[/cyan]")
-
-@cli.command()
-def dashboard():
-    """Mostra dashboard em tempo real"""
+    """Lista ferramentas"""
     config = ConfigManager().load()
     runtime = MCPRuntime(config)
     runtime.start()
-    runtime.observability.show_dashboard(runtime)
+    console.print("\n[bold]Ferramentas:[/bold]")
+    for name, tool in runtime.tools.items():
+        console.print(f"   • {name} → {tool.description}")
 
 @cli.command()
-def example():
-    """Mostra exemplos de uso"""
-    console.print(Panel.fit(
-        "[bold green]Exemplos de uso do DGM-MCP[/bold green]\n\n"
-        "1. Analisar projeto:\n   → 'Analisa a estrutura do projeto e sugere melhorias'\n\n"
-        "2. Criar feature:\n   → 'Cria um endpoint /users com FastAPI'\n\n"
-        "3. Refatorar código:\n   → 'Refatora o arquivo main.py para usar async'\n\n"
-        "4. Debug:\n   → 'Encontra e corrige o bug no módulo auth'",
-        title="📋 Exemplos"
-    ))
+def dashboard():
+    """Mostra dashboard"""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    if hasattr(runtime, 'observability'):
+        runtime.observability.show_dashboard(runtime)
 
 @cli.command()
 def test():
-    """Executa um teste rápido do sistema"""
-    console.print("[bold]🧪 Executando teste rápido...[/bold]")
+    """Teste rápido"""
     config = ConfigManager().load()
     runtime = MCPRuntime(config)
-
-    # Iniciar numa thread para podermos interagir
-    worker_thread = threading.Thread(target=runtime.start, daemon=True)
-    worker_thread.start()
-
-    time.sleep(1) # Esperar inicialização
-
-    task = runtime.task_manager.create_task("Testar criação de ficheiro e git status")
+    runtime.start()
+    task = runtime.task_manager.create_task("Teste rápido do sistema")
     result = runtime.agent.analyze_task(task.id)
+    console.print("[green]✅ Teste concluído[/green]")
 
-    console.print("[green]✅ Teste concluído com sucesso![/green]")
-    console.print(f"Task ID: {task.id}")
-
-    runtime.stop()
+@cli.command()
+def stream():
+    """Teste de streaming com LLM"""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    task = runtime.task_manager.create_task("Explica brevemente o que é o DGM-MCP")
+    runtime.agent.stream_response(task.description)
 
 if __name__ == "__main__":
     cli()
