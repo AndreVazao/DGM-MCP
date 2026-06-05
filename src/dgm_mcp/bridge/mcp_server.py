@@ -4,18 +4,15 @@ import uvicorn
 from rich.console import Console
 
 from ..core.runtime import MCPRuntime
-from ..control.task_manager import TaskManager
-from ..control.cognitive_agent import CognitiveAgent
 
 console = Console()
 
 class MCPServer:
     def __init__(self, runtime: MCPRuntime):
         self.runtime = runtime
-        self.app = FastAPI(title="DGM-MCP Server")
+        self.app = FastAPI(title="DGM-MCP")
         self.task_manager = runtime.task_manager
         self.agent = runtime.agent
-
         self.setup_routes()
 
     def setup_routes(self):
@@ -26,25 +23,19 @@ class MCPServer:
             session_id = data.get("session_id")
 
             if not description:
-                return {"status": "error", "message": "description is required"}
+                return {"status": "error", "message": "description required"}
 
             task = self.task_manager.create_task(description)
-
-            # Ligar com sessão
-            if not session_id or session_id not in self.agent.sessions:
-                session_id = self.agent.create_session()
-
             result = self.agent.analyze_task(task.id)
-
-            console.print(f"[green]Tarefa recebida → {task.id} (Session: {session_id})[/green]")
 
             return {
                 "status": "success",
                 "task_id": task.id,
                 "session_id": session_id,
-                "plan": result.get("plan")
+                "plan": result.get("plan"),
+                "model": result.get("llm_model")
             }
 
     def start(self):
-        console.print("🟢 MCP Server rodando em http://127.0.0.1:8000")
+        console.print("🟢 MCP Server em http://127.0.0.1:8000")
         uvicorn.run(self.app, host="127.0.0.1", port=8000, log_level="info")

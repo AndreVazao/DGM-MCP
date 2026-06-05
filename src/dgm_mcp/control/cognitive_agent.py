@@ -106,23 +106,18 @@ class CognitiveAgent:
                     return {"success": False, "message": "Ação rejeitada pelo utilizador"}
 
             result = tool.execute(**step)
-            return result.model_dump() if hasattr(result, "model_dump") else result
+            return result.model_dump() if hasattr(result, "model_dump") else {"success": result.success, "message": result.message}
         else:
             if tool_name == "thinking":
                 return {"success": True, "message": "Thinking completed"}
             return {"success": False, "message": f"Tool '{tool_name}' não encontrada"}
 
-    def stream_thinking(self, task_id: str):
-        """Simula pensamento passo a passo com LLM"""
-        task = self.task_manager.get_task(task_id)
-        console.print("[bold magenta]🤔 Pensando...[/bold magenta]")
-
-        prompt = f"Pensa passo a passo sobre: {task.description}"
-        response = self.llm.generate(
-            prompt=prompt,
-            system_prompt=Prompts.SYSTEM_ENGINEER
-        )
+    def stream_response(self, prompt: str, system_prompt: str = None):
+        """Gera resposta com streaming simulado"""
+        console.print("[bold magenta]🤖 LLM pensando...[/bold magenta]")
+        response = self.llm.generate(prompt=prompt, system_prompt=system_prompt or Prompts.SYSTEM_ENGINEER)
 
         if response.success:
-            console.print(f"[italic]{response.content[:400]}...[/italic]")
+            console.print(f"[green]Resposta do {response.model}:[/green]")
+            console.print(response.content[:800] + "..." if len(response.content) > 800 else response.content)
         return response

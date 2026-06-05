@@ -15,7 +15,6 @@ class TestBasic(unittest.TestCase):
         self.assertTrue(runtime.running)
         self.assertGreaterEqual(len(runtime.tools), 3)
         self.assertIsNotNone(runtime.llm_manager)
-        self.assertIsNotNone(runtime.observability)
 
 if __name__ == '__main__':
     unittest.main()

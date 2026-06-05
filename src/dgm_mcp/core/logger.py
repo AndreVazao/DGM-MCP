@@ -2,6 +2,7 @@ from rich.console import Console
 from rich.logging import RichHandler
 import logging
 import sys
+from pathlib import Path
 
 console = Console()
 
@@ -10,22 +11,27 @@ class DGMLogger:
         self.logger = logging.getLogger("dgm_mcp")
         self.logger.setLevel(logging.INFO)
 
+        # Console handler
         handler = RichHandler(console=console, show_time=True, show_path=False)
-        formatter = logging.Formatter("%(message)s")
-        handler.setFormatter(formatter)
-
-        self.logger.handlers.clear()
         self.logger.addHandler(handler)
+
+        # File handler
+        log_dir = Path("logs")
+        log_dir.mkdir(exist_ok=True)
+        file_handler = logging.FileHandler(log_dir / "dgm_mcp.log", encoding="utf-8")
+        file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        self.logger.addHandler(file_handler)
+
         self.logger.propagate = False
 
     def info(self, msg: str):
-        self.logger.info(f"[bold blue]ℹ[/bold blue] {msg}")
+        self.logger.info(msg)
 
     def success(self, msg: str):
-        self.logger.info(f"[bold green]✅[/bold green] {msg}")
+        self.logger.info(f"✅ {msg}")
 
     def warning(self, msg: str):
-        self.logger.warning(f"[bold yellow]⚠[/bold yellow] {msg}")
+        self.logger.warning(f"⚠ {msg}")
 
     def error(self, msg: str):
-        self.logger.error(f"[bold red]❌[/bold red] {msg}")
+        self.logger.error(f"❌ {msg}")

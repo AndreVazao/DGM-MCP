@@ -1,22 +1,14 @@
 # DGM-MCP
 
-**Motor de Controlo para LLMs** — Permite que Claude, ChatGPT, Grok, Gemini ou Ollama façam engenharia de software real no teu computador de forma **segura**.
+**Sistema de Controlo para LLMs** — Transforma Claude, ChatGPT, Grok, Gemini ou Ollama num engenheiro de software real, com segurança e aprovação humana.
 
-## Funcionalidades
-- Suporte multi-LLM (Claude, GPT-4o, Grok, Gemini, Ollama local)
-- PathGuard + aprovação humana obrigatória
-- Worker em background
-- Patch preview com diff
-- MCP Server para integração com Claude Desktop / Cursor
-
-## Como começar
+## Instalação Rápida
 
 ```bash
 git clone https://github.com/AndreVazao/DGM-MCP.git
 cd DGM-MCP
 python scripts/init.py
 dgm-mcp dashboard
-dgm-mcp start
 ```
 
 ## LLMs Suportados
