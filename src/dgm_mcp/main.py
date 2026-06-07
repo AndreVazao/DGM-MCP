@@ -57,5 +57,14 @@ def dashboard():
     if hasattr(runtime, 'observability'):
         runtime.observability.show_dashboard(runtime)
 
+@cli.command()
+def web():
+    """Inicia interface web simples"""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    from .web.app import start_web
+    start_web()
+
 if __name__ == "__main__":
     cli()
