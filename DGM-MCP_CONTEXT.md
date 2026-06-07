@@ -118,7 +118,7 @@ Podes configurar o MCP como tool customizada.
 ### Ollama Local
 Funciona sem API key.
 
-## Fase 13 — Status Atual (v0.1.4)
+## Fase 18 — Status Atual (v0.1.5)
 
 - Multi-LLM completo (ChatGPT, Claude, Grok, Gemini, Ollama)
 - Sistema de aprovação rico com preview
@@ -131,7 +131,7 @@ Funciona sem API key.
 
 ## Checklist de Produção (v0.1.4)
 
-- [x] Multi-LLM completo
+- [x] Dynamic LLM Detection (Fase 18)
 - [x] PathGuard + Security
 - [x] Sistema de aprovação humana
 - [x] Worker em thread
@@ -145,7 +145,7 @@ Funciona sem API key.
 
 ## Checklist de Produção (v0.1.5)
 
-- [x] Multi-LLM completo
+- [x] Dynamic LLM Detection (Fase 18)
 - [x] PathGuard + Security
 - [x] Sistema de aprovação humana
 - [x] Worker em thread
@@ -156,3 +156,8 @@ Funciona sem API key.
 - [ ] Integração real com Claude Desktop (testar)
 - [ ] Melhor error recovery
 - [ ] Logging para ficheiro
+
+## Fase 18 — Status Atual (Production Ready)
+- Dynamic LLM Detection e Auto-Registration.
+- Comando `status` completo para diagnóstico.
+- Documentação de uso real com Claude Desktop, Cursor, etc.

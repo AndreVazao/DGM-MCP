@@ -29,6 +29,16 @@ def start():
         console.print(f"[bold red]Erro: {e}[/bold red]")
 
 @cli.command()
+def status():
+    """Mostra status completo do sistema"""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    console.print("\n[bold]📊 DGM-MCP Status[/bold]")
+    console.print(f"LLMs disponíveis: {runtime.llm_manager.list_available()}")
+    console.print(f"LLM ativo: {runtime.llm_manager.current_provider.name if runtime.llm_manager.current_provider else 'Nenhum'}")
+
+@cli.command()
 def tools():
     """Lista todas as ferramentas"""
     config = ConfigManager().load()

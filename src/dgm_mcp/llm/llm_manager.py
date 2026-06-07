@@ -1,5 +1,8 @@
-from typing import Dict
+from typing import Dict, Optional
 from rich.console import Console
+import os
+import subprocess
+
 from .base_provider import BaseLLMProvider, LLMResponse
 from .providers.openai_provider import OpenAIProvider
 from .providers.anthropic_provider import AnthropicProvider
@@ -12,39 +15,42 @@ console = Console()
 class LLMManager:
     def __init__(self):
         self.providers: Dict[str, BaseLLMProvider] = {}
-        self.current_provider = None
-        self._register_all()
+        self.current_provider: Optional[BaseLLMProvider] = None
+        self._auto_detect_and_register()
 
-    def _register_all(self):
-        providers = [
+    def _auto_detect_and_register(self):
+        """Detecta automaticamente quais LLMs estão disponíveis"""
+        candidates = [
             OpenAIProvider(),      # ChatGPT + Codex
             AnthropicProvider(),   # Claude
             GeminiProvider(),
             GrokProvider(),
             OllamaProvider(),
         ]
-        for p in providers:
-            if p.is_available():
-                self.providers[p.name.lower()] = p
-                console.print(f"   ✅ LLM carregado: [green]{p.name}[/green]")
 
-    def set_provider(self, name: str):
+        for provider in candidates:
+            if provider.is_available():
+                self.providers[provider.name.lower()] = provider
+                console.print(f"   ✅ LLM detectado: [green]{provider.name} ({provider.model})[/green]")
+
+        if self.providers:
+            # Usa Claude por default se disponível, senão o primeiro
+            preferred = "claude" if "claude" in self.providers else list(self.providers.keys())[0]
+            self.set_provider(preferred)
+        else:
+            console.print("[yellow]⚠️ Nenhum LLM encontrado. Configure API keys no .env[/yellow]")
+
+    def set_provider(self, name: str) -> bool:
         key = name.lower()
         if key in self.providers:
             self.current_provider = self.providers[key]
-            console.print(f"[bold green]LLM ativo: {self.current_provider.name}[/bold green]")
+            console.print(f"[bold green]🤖 LLM Ativo: {self.current_provider.name}[/bold green]")
             return True
-        console.print(f"[red]Provider {name} não disponível[/red]")
         return False
 
     def generate(self, prompt: str, system_prompt: str = None, **kwargs):
         if not self.current_provider:
-            # Default para o primeiro disponível
-            if self.providers:
-                self.current_provider = list(self.providers.values())[0]
-            else:
-                return LLMResponse("Nenhum LLM disponível", "none", False)
-
+            return LLMResponse("Nenhum LLM disponível", "none", False)
         return self.current_provider.generate(prompt, system_prompt, **kwargs)
 
     def list_available(self):
