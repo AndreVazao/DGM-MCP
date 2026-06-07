@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class MCPConfig(BaseModel):
-    allowed_paths: list[str] = ["./", "../projects"]
+    allowed_paths: list[str] = ["./", "../projects", "."]
     max_workers: int = 4
     log_level: str = "INFO"
     enable_approval: bool = True
