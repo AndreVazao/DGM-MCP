@@ -26,6 +26,20 @@ dgm-mcp web
 
 O sistema **detecta automaticamente** quais LLMs tens configurados.
 
+## Utilizar com Grok (xAI)
+
+1. Obtém a tua API key em https://console.x.ai
+2. Adiciona no `.env`:
+   ```env
+   XAI_API_KEY=xai-...
+   ```
+3. O DGM-MCP vai detetar automaticamente o Grok e colocá-lo como prioridade.
+
+Podes forçar o uso do Grok com:
+```bash
+dgm-mcp start --llm Grok
+```
+
 ## Instalação Rápida
 
 ```bash

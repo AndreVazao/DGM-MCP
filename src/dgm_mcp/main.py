@@ -11,12 +11,20 @@ def cli():
     pass
 
 @cli.command()
-def start():
+@click.option("--llm", default=None, help="Forçar LLM específico")
+def start(llm: str = None):
     """Inicia o DGM-MCP Server"""
     console.print("[bold green]🚀 Iniciando DGM-MCP...[/bold green]")
     config = ConfigManager().load()
     runtime = MCPRuntime(config)
     runtime.start()
+
+    if llm:
+        if runtime.llm_manager.set_provider(llm):
+            console.print(f"[green]Forçado LLM: {llm}[/green]")
+        else:
+            console.print(f"[red]Erro: LLM '{llm}' não encontrado ou não disponível.[/red]")
+            return
 
     from .bridge.mcp_server import MCPServer
     server = MCPServer(runtime)
