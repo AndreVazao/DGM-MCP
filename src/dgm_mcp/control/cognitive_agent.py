@@ -113,10 +113,11 @@ class CognitiveAgent:
             return {"success": False, "message": f"Tool '{tool_name}' não encontrada"}
 
     def stream_response(self, prompt: str, system_prompt: str = None):
-        """Gera resposta com streaming simulado"""
         console.print("[bold magenta]🤖 LLM pensando...[/bold magenta]")
-        response = self.llm.generate(prompt=prompt, system_prompt=system_prompt or Prompts.SYSTEM_ENGINEER)
-
+        response = self.llm.generate(
+            prompt=prompt,
+            system_prompt=system_prompt or Prompts.SYSTEM_ENGINEER
+        )
         if response.success:
             console.print(f"[green]Resposta do {response.model}:[/green]")
             console.print(response.content[:800] + "..." if len(response.content) > 800 else response.content)
