@@ -34,9 +34,15 @@ class LLMManager:
                 console.print(f"   ✅ LLM detectado: [green]{provider.name} ({provider.model})[/green]")
 
         if self.providers:
-            # Usa Claude por default se disponível, senão o primeiro
-            preferred = "claude" if "claude" in self.providers else list(self.providers.keys())[0]
-            self.set_provider(preferred)
+            # Prioridade: Grok > Claude > ChatGPT > outros
+            preferred_order = ["grok", "claude", "chatgpt", "ollama"]
+            for pref in preferred_order:
+                if pref in self.providers:
+                    self.set_provider(pref)
+                    break
+            else:
+                # fallback
+                self.set_provider(list(self.providers.keys())[0])
         else:
             console.print("[yellow]⚠️ Nenhum LLM encontrado. Configure API keys no .env[/yellow]")
 
