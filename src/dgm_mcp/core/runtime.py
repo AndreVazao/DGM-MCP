@@ -38,7 +38,6 @@ class MCPRuntime:
         self.worker = Worker(self, self.task_manager)
         self.worker.start()
 
-        # Configurar LLM default
         default_llm = getattr(self.config, 'default_llm', 'Claude')
         self.llm_manager.set_provider(default_llm)
 
