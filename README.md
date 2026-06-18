@@ -1,3 +1,5 @@
+# STATUS: PRODUCTION BETA
+
 # DGM-MCP
 
 **Sistema de Controlo para LLMs** — Transforma Claude, ChatGPT, Grok, Gemini ou Ollama num engenheiro de software real, com segurança e aprovação humana.

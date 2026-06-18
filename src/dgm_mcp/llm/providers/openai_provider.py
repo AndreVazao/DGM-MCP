@@ -1,22 +1,26 @@
 import os
+from typing import Optional
 from ..base_provider import BaseLLMProvider, LLMResponse
+from ...config.config_manager import MCPConfig
 
 class OpenAIProvider(BaseLLMProvider):
     name = "ChatGPT"
     model = "gpt-4o"
 
-    def __init__(self):
+    def __init__(self, config: Optional[MCPConfig] = None):
+        self.config = config
         try:
             from openai import OpenAI
-            api_key = os.getenv("OPENAI_API_KEY")
+            api_key = (config.openai_key if config else None) or os.getenv("OPENAI_API_KEY")
             self.client = OpenAI(api_key=api_key) if api_key else None
         except ImportError:
             self.client = None
 
     def is_available(self) -> bool:
+        api_key = (self.config.openai_key if self.config else None) or os.getenv("OPENAI_API_KEY")
         try:
             import openai
-            return bool(os.getenv("OPENAI_API_KEY"))
+            return bool(api_key)
         except ImportError:
             return False
 

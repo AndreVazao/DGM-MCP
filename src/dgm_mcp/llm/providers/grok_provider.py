@@ -1,23 +1,30 @@
 import os
-from openai import OpenAI
+from typing import Optional
 from ..base_provider import BaseLLMProvider, LLMResponse
+from ...config.config_manager import MCPConfig
 
 class GrokProvider(BaseLLMProvider):
     name = "Grok"
-    model = "grok-3-beta"          # ou grok-beta, conforme disponibilidade atual
+    model = "grok-3-beta"
 
-    def __init__(self):
-        self.api_key = os.getenv("XAI_API_KEY")
-        if self.api_key:
-            self.client = OpenAI(
-                api_key=self.api_key,
-                base_url="https://api.x.ai/v1"
-            )
-        else:
+    def __init__(self, config: Optional[MCPConfig] = None):
+        self.config = config
+        try:
+            from openai import OpenAI
+            api_key = (config.xai_key if config else None) or os.getenv("XAI_API_KEY")
+            if api_key:
+                self.client = OpenAI(
+                    api_key=api_key,
+                    base_url="https://api.x.ai/v1"
+                )
+            else:
+                self.client = None
+        except ImportError:
             self.client = None
 
     def is_available(self) -> bool:
-        return bool(os.getenv("XAI_API_KEY"))
+        api_key = (self.config.xai_key if self.config else None) or os.getenv("XAI_API_KEY")
+        return bool(api_key)
 
     def generate(self, prompt: str, system_prompt: str = None, **kwargs):
         if not self.client:

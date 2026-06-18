@@ -1,7 +1,6 @@
 from typing import Dict, Optional
 from rich.console import Console
 import os
-import subprocess
 
 from .base_provider import BaseLLMProvider, LLMResponse
 from .providers.openai_provider import OpenAIProvider
@@ -9,11 +8,13 @@ from .providers.anthropic_provider import AnthropicProvider
 from .providers.gemini_provider import GeminiProvider
 from .providers.grok_provider import GrokProvider
 from .providers.ollama_provider import OllamaProvider
+from ..config.config_manager import MCPConfig
 
 console = Console()
 
 class LLMManager:
-    def __init__(self):
+    def __init__(self, config: Optional[MCPConfig] = None):
+        self.config = config
         self.providers: Dict[str, BaseLLMProvider] = {}
         self.current_provider: Optional[BaseLLMProvider] = None
         self._auto_detect_and_register()
@@ -21,11 +22,11 @@ class LLMManager:
     def _auto_detect_and_register(self):
         """Detecta automaticamente quais LLMs estão disponíveis"""
         candidates = [
-            OpenAIProvider(),      # ChatGPT + Codex
-            AnthropicProvider(),   # Claude
-            GeminiProvider(),
-            GrokProvider(),
-            OllamaProvider(),
+            OpenAIProvider(self.config),      # ChatGPT + Codex
+            AnthropicProvider(self.config),   # Claude
+            GeminiProvider(self.config),
+            GrokProvider(self.config),
+            OllamaProvider(self.config),
         ]
 
         for provider in candidates:
@@ -36,13 +37,16 @@ class LLMManager:
         if self.providers:
             # Prioridade: Grok > Claude > ChatGPT > outros
             preferred_order = ["grok", "claude", "chatgpt", "ollama"]
-            for pref in preferred_order:
-                if pref in self.providers:
-                    self.set_provider(pref)
-                    break
+            # If config has a default_llm, prioritize it
+            if self.config and self.config.default_llm.lower() in self.providers:
+                self.set_provider(self.config.default_llm)
             else:
-                # fallback
-                self.set_provider(list(self.providers.keys())[0])
+                for pref in preferred_order:
+                    if pref in self.providers:
+                        self.set_provider(pref)
+                        break
+                else:
+                    self.set_provider(list(self.providers.keys())[0])
         else:
             console.print("[yellow]⚠️ Nenhum LLM encontrado. Configure API keys no .env[/yellow]")
 

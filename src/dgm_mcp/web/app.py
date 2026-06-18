@@ -1,16 +1,28 @@
 import os
 from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from rich.console import Console
 import uvicorn
 
 from ..core.runtime import MCPRuntime
 from ..config.config_manager import ConfigManager
+from .rate_limiter import RateLimitMiddleware
 
 console = Console()
 
 app = FastAPI(title="DGM-MCP Web")
+app.add_middleware(RateLimitMiddleware, req_per_second=5, req_per_minute=50)
+
+# Global runtime instance for the web app
+_runtime = None
+
+def get_runtime():
+    global _runtime
+    if _runtime is None:
+        config = ConfigManager().load()
+        _runtime = MCPRuntime(config)
+        _runtime.start()
+    return _runtime
 
 API_KEY = os.getenv("DGM_API_KEY")
 
@@ -38,8 +50,28 @@ async def home(api_key: None = Depends(validate_api_key)):
 async def create_task(request: Request, api_key: None = Depends(validate_api_key)):
     data = await request.form()
     description = data.get("description")
-    # Aqui ligar ao runtime real no futuro
-    return {"status": "received", "description": description}
+    runtime = get_runtime()
+    task = runtime.task_manager.create_task(description)
+    return {"status": "received", "task_id": task.id}
+
+@app.get("/health")
+async def health(runtime: MCPRuntime = Depends(get_runtime)):
+    return {
+        "status": "ok",
+        "runtime": runtime.running,
+        "tools": len(runtime.tools),
+        "llm_provider": runtime.llm_manager.current_provider.name.lower() if runtime.llm_manager.current_provider else "none"
+    }
+
+@app.get("/metrics")
+async def metrics(runtime: MCPRuntime = Depends(get_runtime)):
+    obs = runtime.observability
+    return {
+        "tasks_total": obs.tasks_total,
+        "tasks_success": obs.tasks_success,
+        "tasks_failed": obs.tasks_failed,
+        "tool_calls": obs.tool_calls
+    }
 
 def start_web():
     console.print("[green]🌐 Interface Web iniciada em http://127.0.0.1:8001[/green]")

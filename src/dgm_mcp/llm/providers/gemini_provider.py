@@ -1,18 +1,21 @@
 import os
+from typing import Optional
+from ..base_provider import BaseLLMProvider, LLMResponse
+from ...config.config_manager import MCPConfig
+
 try:
     import google.generativeai as genai
     HAS_GENAI = True
 except ImportError:
     HAS_GENAI = False
 
-from ..base_provider import BaseLLMProvider, LLMResponse
-
 class GeminiProvider(BaseLLMProvider):
     name = "Gemini"
     model = "gemini-1.5-pro"
 
-    def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY")
+    def __init__(self, config: Optional[MCPConfig] = None):
+        self.config = config
+        api_key = (config.google_key if config else None) or os.getenv("GOOGLE_API_KEY")
         if api_key and HAS_GENAI:
             genai.configure(api_key=api_key)
             self.model_instance = genai.GenerativeModel(self.model)
@@ -20,7 +23,8 @@ class GeminiProvider(BaseLLMProvider):
             self.model_instance = None
 
     def is_available(self) -> bool:
-        return HAS_GENAI and bool(os.getenv("GEMINI_API_KEY"))
+        api_key = (self.config.google_key if self.config else None) or os.getenv("GOOGLE_API_KEY")
+        return HAS_GENAI and bool(api_key)
 
     def generate(self, prompt: str, system_prompt: str = None, **kwargs):
         if not self.model_instance:

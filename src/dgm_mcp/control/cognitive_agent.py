@@ -75,18 +75,30 @@ class CognitiveAgent:
 
         for step in task.plan.get("steps", []):
             console.print(f"   → {step.get('description')}")
-            result = self.execute_step(step)
+            result = self.execute_step(step, task.role)
             results.append(result)
 
             if not result.get("success", False):
                 console.print(f"[red]   ✗ Step falhou: {result.get('message')}[/red]")
                 break
 
-        task.status = "completed" if all(r.get("success", False) for r in results) else "failed"
+        is_success = all(r.get("success", False) for r in results)
+        task.status = "completed" if is_success else "failed"
+        self.runtime.observability.record_task(success=is_success)
+
         return {"success": True, "results": results}
 
-    def execute_step(self, step: dict):
+    def execute_step(self, step: dict, role: str = "developer"):
         tool_name = step.get("tool")
+
+        # Validar permissões (RBAC)
+        allowed_tools = self.runtime.config.roles.get(role, [])
+        if tool_name not in allowed_tools and tool_name != "thinking":
+            return {
+                "success": False,
+                "message": f"Acesso negado: o papel '{role}' não tem permissão para a tool '{tool_name}'"
+            }
+
         if tool_name in self.tools:
             tool = self.tools[tool_name]
 
@@ -104,7 +116,9 @@ class CognitiveAgent:
                 )
                 if not approved:
                     return {"success": False, "message": "Ação rejeitada pelo utilizador"}
+                self.runtime.observability.approvals += 1
 
+            self.runtime.observability.record_tool_call(tool_name)
             result = tool.execute(**step)
             return result.model_dump() if hasattr(result, "model_dump") else {"success": result.success, "message": result.message}
         else:
