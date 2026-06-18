@@ -4,6 +4,7 @@ import uvicorn
 from rich.console import Console
 
 from ..core.runtime import MCPRuntime
+from ..web.rate_limiter import RateLimitMiddleware
 
 console = Console()
 
@@ -11,6 +12,7 @@ class MCPServer:
     def __init__(self, runtime: MCPRuntime):
         self.runtime = runtime
         self.app = FastAPI(title="DGM-MCP")
+        self.app.add_middleware(RateLimitMiddleware, req_per_second=5, req_per_minute=50)
         self.task_manager = runtime.task_manager
         self.agent = runtime.agent
         self.setup_routes()
@@ -34,6 +36,25 @@ class MCPServer:
                 "session_id": session_id,
                 "plan": result.get("plan"),
                 "model": result.get("llm_model")
+            }
+
+        @self.app.get("/health")
+        async def health():
+            return {
+                "status": "ok",
+                "runtime": self.runtime.running,
+                "tools": len(self.runtime.tools),
+                "llm_provider": self.runtime.llm_manager.current_provider.name.lower() if self.runtime.llm_manager.current_provider else "none"
+            }
+
+        @self.app.get("/metrics")
+        async def metrics():
+            obs = self.runtime.observability
+            return {
+                "tasks_total": obs.tasks_total,
+                "tasks_success": obs.tasks_success,
+                "tasks_failed": obs.tasks_failed,
+                "tool_calls": obs.tool_calls
             }
 
     def start(self):

@@ -1,3 +1,5 @@
+# STATUS: PRODUCTION BETA
+
 # DGM-MCP CONTEXT
 
 ## Visão Geral

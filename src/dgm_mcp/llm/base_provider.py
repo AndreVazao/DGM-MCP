@@ -12,6 +12,10 @@ class BaseLLMProvider(ABC):
     model: str
 
     @abstractmethod
+    def __init__(self, config: Optional[Any] = None):
+        pass
+
+    @abstractmethod
     def generate(self, prompt: str, system_prompt: str = None, **kwargs) -> LLMResponse:
         pass
 

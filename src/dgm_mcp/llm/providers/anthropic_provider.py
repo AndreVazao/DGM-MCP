@@ -1,22 +1,26 @@
 import os
+from typing import Optional
 from ..base_provider import BaseLLMProvider, LLMResponse
+from ...config.config_manager import MCPConfig
 
 class AnthropicProvider(BaseLLMProvider):
     name = "Claude"
     model = "claude-3-5-sonnet-20240620"
 
-    def __init__(self):
+    def __init__(self, config: Optional[MCPConfig] = None):
+        self.config = config
         try:
             from anthropic import Anthropic
-            api_key = os.getenv("ANTHROPIC_API_KEY")
+            api_key = (config.anthropic_key if config else None) or os.getenv("ANTHROPIC_API_KEY")
             self.client = Anthropic(api_key=api_key) if api_key else None
         except ImportError:
             self.client = None
 
     def is_available(self) -> bool:
+        api_key = (self.config.anthropic_key if self.config else None) or os.getenv("ANTHROPIC_API_KEY")
         try:
             import anthropic
-            return bool(os.getenv("ANTHROPIC_API_KEY"))
+            return bool(api_key)
         except ImportError:
             return False
 

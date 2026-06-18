@@ -23,7 +23,7 @@ class MCPRuntime:
         self.task_manager = TaskManager()
         self.logger = DGMLogger()
         self.observability = Observability()
-        self.llm_manager = LLMManager()
+        self.llm_manager = LLMManager(config)
         self.agent = None
         self.worker = None
 
@@ -40,16 +40,18 @@ class MCPRuntime:
         self.worker = Worker(self, self.task_manager)
         self.worker.start()
 
-        default_llm = getattr(self.config, 'default_llm', 'Claude')
-        self.llm_manager.set_provider(default_llm)
+        # LLMManager already sets the default provider based on config during init
+        # but we can force it again if needed.
+        if self.config.default_llm:
+            self.llm_manager.set_provider(self.config.default_llm)
 
     def _register_tools(self):
         tools = [
-            FilesystemTool(self.path_guard),
-            GitTool(self.path_guard),
-            ShellTool(self.path_guard),
-            PatchTool(self.path_guard),
-            RepoTool(self.path_guard),
+            FilesystemTool(self.path_guard, self.audit),
+            GitTool(self.path_guard, self.audit),
+            ShellTool(self.path_guard, self.audit, self.config.max_tool_execution_seconds),
+            PatchTool(self.path_guard, self.audit),
+            RepoTool(self.path_guard, self.audit),
         ]
         for tool in tools:
             self.tools[tool.name] = tool
