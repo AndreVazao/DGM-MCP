@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+import os
+from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from rich.console import Console
@@ -11,8 +12,19 @@ console = Console()
 
 app = FastAPI(title="DGM-MCP Web")
 
+API_KEY = os.getenv("DGM_API_KEY")
+
+def validate_api_key(x_dgm_key: str = Header(default="")):
+    if not API_KEY:
+        return
+    if x_dgm_key != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="API key inválida"
+        )
+
 @app.get("/", response_class=HTMLResponse)
-async def home():
+async def home(api_key: None = Depends(validate_api_key)):
     return """
     <h1>DGM-MCP Dashboard</h1>
     <p>Interface web simples para controlar o MCP</p>
@@ -23,7 +35,7 @@ async def home():
     """
 
 @app.post("/task")
-async def create_task(request: Request):
+async def create_task(request: Request, api_key: None = Depends(validate_api_key)):
     data = await request.form()
     description = data.get("description")
     # Aqui ligar ao runtime real no futuro

@@ -1,22 +1,59 @@
 from .base_tool import BaseTool, ToolResult
+
+import shlex
 import subprocess
+
 
 class ShellTool(BaseTool):
     name = "shell"
-    description = "Executa comandos shell de forma controlada"
 
-    ALLOWED_COMMANDS = ["ls", "dir", "echo", "python", "pip", "pytest", "black", "ruff"]
+    description = "Executa comandos permitidos"
 
-    def execute(self, command: str, cwd: str = ".", **kwargs) -> ToolResult:
+    ALLOWED_COMMANDS = {
+        "python",
+        "pip",
+        "pytest",
+        "black",
+        "ruff",
+        "dir",
+        "ls",
+        "echo",
+    }
+
+    def execute(
+        self,
+        command: str,
+        cwd: str = ".",
+        **kwargs,
+    ) -> ToolResult:
+
         try:
             safe_cwd = self.path_guard.validate_path(cwd)
 
-            # Segurança básica
-            cmd_base = command.split()[0] if command else ""
-            if cmd_base not in self.ALLOWED_COMMANDS:
-                return ToolResult(success=False, message=f"Comando não permitido: {cmd_base}")
+            tokens = shlex.split(command)
 
-            result = subprocess.run(command, shell=True, cwd=safe_cwd, capture_output=True, text=True, timeout=30)
+            if not tokens:
+                return ToolResult(
+                    success=False,
+                    message="Comando vazio"
+                )
+
+            base_command = tokens[0]
+
+            if base_command not in self.ALLOWED_COMMANDS:
+                return ToolResult(
+                    success=False,
+                    message=f"Comando não permitido: {base_command}"
+                )
+
+            result = subprocess.run(
+                tokens,
+                cwd=safe_cwd,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                shell=False
+            )
 
             return ToolResult(
                 success=result.returncode == 0,
@@ -24,10 +61,20 @@ class ShellTool(BaseTool):
                 data={
                     "stdout": result.stdout,
                     "stderr": result.stderr,
-                    "returncode": result.returncode
+                    "returncode": result.returncode,
                 }
             )
+
         except subprocess.TimeoutExpired:
-            return ToolResult(success=False, message="Comando excedeu o tempo limite")
+
+            return ToolResult(
+                success=False,
+                message="Timeout"
+            )
+
         except Exception as e:
-            return ToolResult(success=False, message=str(e))
+
+            return ToolResult(
+                success=False,
+                message=str(e)
+            )

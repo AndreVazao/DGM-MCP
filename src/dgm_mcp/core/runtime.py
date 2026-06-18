@@ -1,5 +1,6 @@
 from ..config.config_manager import MCPConfig
 from ..security.path_guard import PathGuard
+from ..security.audit_logger import AuditLogger
 from ..tools.filesystem_tool import FilesystemTool
 from ..tools.git_tool import GitTool
 from ..tools.shell_tool import ShellTool
@@ -17,6 +18,7 @@ class MCPRuntime:
         self.config = config
         self.running = False
         self.path_guard = PathGuard(config.allowed_paths)
+        self.audit = AuditLogger()
         self.tools = {}
         self.task_manager = TaskManager()
         self.logger = DGMLogger()
