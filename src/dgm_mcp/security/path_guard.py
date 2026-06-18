@@ -1,21 +1,37 @@
 from pathlib import Path
-from typing import List
+from typing import Iterable
+
 
 class PathGuard:
-    """Protege o sistema contra acessos fora das pastas permitidas"""
+    """
+    Validação segura de caminhos.
 
-    def __init__(self, allowed_paths: List[str]):
-        self.allowed_paths = [Path(p).resolve() for p in allowed_paths]
+    Impede:
+    - path traversal
+    - escapes para fora da whitelist
+    - bypass via startswith()
+    - symlink escapes (resolve())
+    """
+
+    def __init__(self, allowed_paths: Iterable[str]):
+        self.allowed_paths = [
+            Path(p).expanduser().resolve(strict=False)
+            for p in allowed_paths
+        ]
 
     def validate_path(self, path: str | Path) -> Path:
-        """Valida e retorna o path absoluto se for seguro"""
-        abs_path = Path(path).resolve()
+        candidate = Path(path).expanduser().resolve(strict=False)
 
         for allowed in self.allowed_paths:
-            if str(abs_path).startswith(str(allowed)):
-                return abs_path
+            try:
+                candidate.relative_to(allowed)
+                return candidate
+            except ValueError:
+                continue
 
-        raise PermissionError(f"Path não permitido: {abs_path}")
+        raise PermissionError(
+            f"Path não permitido: {candidate}"
+        )
 
     def is_safe(self, path: str | Path) -> bool:
         try:
