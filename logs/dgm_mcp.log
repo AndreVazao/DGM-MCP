@@ -282,3 +282,9 @@
 2026-06-18 18:43:18,875 - INFO - ✅ Tool carregada: patch
 2026-06-18 18:43:18,877 - INFO - ✅ Tool carregada: repo
 2026-06-18 18:43:18,877 - INFO - ✅ Tool carregada: repo
+2026-06-19 18:02:36,721 - INFO - 🚀 MCP Runtime iniciado
+2026-06-19 18:02:36,726 - INFO - ✅ Tool carregada: filesystem
+2026-06-19 18:02:36,730 - INFO - ✅ Tool carregada: git
+2026-06-19 18:02:36,732 - INFO - ✅ Tool carregada: shell
+2026-06-19 18:02:36,735 - INFO - ✅ Tool carregada: patch
+2026-06-19 18:02:36,739 - INFO - ✅ Tool carregada: repo
