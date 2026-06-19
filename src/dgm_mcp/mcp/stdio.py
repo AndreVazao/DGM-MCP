@@ -25,6 +25,8 @@ class StdioMCPServer:
 
     def handle(self, payload: dict[str, Any]) -> dict[str, Any]:
         request = parse_request(payload)
+        if request.id is None and request.method != "shutdown":
+            return {}
 
         if request.method == "initialize":
             return JSONRPCResponse(
@@ -67,17 +69,24 @@ class StdioMCPServer:
                 result=self.prompts.get_prompt(params.get("name", ""), params.get("arguments")),
             ).to_dict()
 
+        if request.method == "shutdown":
+            return JSONRPCResponse(id=request.id, result={"ok": True}).to_dict()
+
         return make_error(request.id, -32601, f"Method not found: {request.method}").to_dict()
 
     def serve(self) -> None:
-        for line in sys.stdin:
-            raw = line.strip()
-            if not raw:
-                continue
-            try:
-                payload = json.loads(raw)
-                response = self.handle(payload)
-            except Exception as exc:
-                response = make_error(None, -32603, "Internal error", str(exc)).to_dict()
-            sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")
-            sys.stdout.flush()
+        try:
+            for line in sys.stdin:
+                raw = line.strip()
+                if not raw:
+                    continue
+                try:
+                    payload = json.loads(raw)
+                    response = self.handle(payload)
+                except Exception as exc:
+                    response = make_error(None, -32603, "Internal error", str(exc)).to_dict()
+                if response:
+                    sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")
+                    sys.stdout.flush()
+        except KeyboardInterrupt:
+            return

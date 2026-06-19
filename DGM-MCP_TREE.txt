@@ -11,6 +11,7 @@
 ./src/dgm_mcp/core
 ./src/dgm_mcp/llm
 ./src/dgm_mcp/mcp
+./src/dgm_mcp/mcp/__pycache__
 ./src/dgm_mcp/security
 ./src/dgm_mcp/tools
 ./src/dgm_mcp/web

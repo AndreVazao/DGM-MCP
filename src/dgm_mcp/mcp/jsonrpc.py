@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import Any
 
 
@@ -42,6 +42,8 @@ class JSONRPCResponse:
 
 
 def parse_request(payload: dict[str, Any]) -> JSONRPCRequest:
+    if not isinstance(payload, dict):
+        raise TypeError("JSON-RPC payload must be an object")
     return JSONRPCRequest(
         jsonrpc=payload.get("jsonrpc", ""),
         method=payload.get("method", ""),
@@ -52,4 +54,3 @@ def parse_request(payload: dict[str, Any]) -> JSONRPCRequest:
 
 def make_error(id_: int | str | None, code: int, message: str, data: Any | None = None) -> JSONRPCResponse:
     return JSONRPCResponse(id=id_, error=JSONRPCError(code=code, message=message, data=data))
-

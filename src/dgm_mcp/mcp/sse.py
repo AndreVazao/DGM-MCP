@@ -29,8 +29,10 @@ class SSEMCPServer:
         @self.app.post("/mcp/message")
         async def message(request: Request):
             payload = await request.json()
+            if payload.get("method") == "shutdown":
+                return JSONResponse({"jsonrpc": "2.0", "id": payload.get("id"), "result": {"ok": True}})
             response = self.core.handle(payload)
-            return JSONResponse(response)
+            return JSONResponse(response) if response else JSONResponse({"ok": True})
 
         @self.app.get("/health")
         async def health():

@@ -26,11 +26,12 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`, `prompts/list` e `prompts/get`.
 - `sse.py`: transporte SSE com endpoint de stream e endpoint de mensagens MCP.
 - Schemas de tools já estão mais restritos, com enums e `additionalProperties: false`.
+- O lifecycle já trata `shutdown` e ignora notificações sem `id`.
 
 ## Próximos Passos
 1. Adicionar validação oficial com MCP Inspector / Claude Desktop.
 2. Expandir resources e prompts com dados mais ricos.
-3. Melhorar lifecycle e encerramento limpo dos transportes.
+3. Validar o transport e o lifecycle com um cliente MCP real.
 4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
 ## Notas Operacionais

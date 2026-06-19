@@ -9,6 +9,7 @@ This roadmap tracks the transition from the custom bridge to a standard MCP serv
 - Resources and prompts with `resources/list`, `resources/read`, `prompts/list`, and `prompts/get`.
 - Constrained tool schemas with enums and `additionalProperties: false`.
 - SSE transport with `/mcp/sse` and `/mcp/message`.
+- Lifecycle support for `shutdown` and JSON-RPC notifications.
 - CLI command: `dgm-mcp run-stdio`.
 - CLI command: `dgm-mcp run-sse`.
 
@@ -26,7 +27,7 @@ Goal: add remote communication for web clients and integrations.
 Goal: validate the MCP flow end-to-end with Claude Desktop / MCP Inspector.
 
 ## Current Priorities
-1. Harden stdio/SSE lifecycle and error handling.
+1. Validate with a real MCP client.
 2. Add richer resources and prompt templates.
 3. Decide when the legacy bridge can be deprecated safely.
 
