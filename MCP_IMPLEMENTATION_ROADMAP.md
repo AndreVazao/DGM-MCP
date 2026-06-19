@@ -10,8 +10,10 @@ This roadmap tracks the transition from the custom bridge to a standard MCP serv
 - Constrained tool schemas with enums and `additionalProperties: false`.
 - SSE transport with `/mcp/sse` and `/mcp/message`.
 - Lifecycle support for `shutdown` and JSON-RPC notifications.
+- Streamable HTTP transport with `/mcp`.
 - CLI command: `dgm-mcp run-stdio`.
 - CLI command: `dgm-mcp run-sse`.
+- CLI command: `dgm-mcp run-http`.
 
 ## Next Phases
 ### Phase 5: Resources

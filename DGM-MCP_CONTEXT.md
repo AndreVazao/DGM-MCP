@@ -13,8 +13,8 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 
 ## Estado Atual
 - **Core legado funcional**: Runtime, tools, web e control continuam operacionais.
-- **MCP fase 1-7 parcialmente concluída**: JSON-RPC, tools, resources, prompts e SSE já expostos.
-- **STDIO e SSE**: comandos `dgm-mcp run-stdio` e `dgm-mcp run-sse` disponíveis para teste local.
+- **MCP fase 1-8 parcialmente concluída**: JSON-RPC, tools, resources, prompts, SSE e HTTP streamable já expostos.
+- **STDIO, SSE e HTTP**: comandos `dgm-mcp run-stdio`, `dgm-mcp run-sse` e `dgm-mcp run-http` disponíveis para teste local.
 - **Testes locais**: suíte principal verde no ambiente atual.
 
 ## MCP Implementado
@@ -25,6 +25,7 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - `resources.py`: resources e prompts expostos pelo servidor MCP.
 - `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`, `prompts/list` e `prompts/get`.
 - `sse.py`: transporte SSE com endpoint de stream e endpoint de mensagens MCP.
+- `http.py`: transporte HTTP streamable com endpoint MCP oficial.
 - Schemas de tools já estão mais restritos, com enums e `additionalProperties: false`.
 - O lifecycle já trata `shutdown` e ignora notificações sem `id`.
 

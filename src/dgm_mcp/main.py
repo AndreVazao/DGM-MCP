@@ -106,5 +106,17 @@ def run_sse():
 
     uvicorn.run(SSEMCPServer(runtime).app, host="127.0.0.1", port=8002, log_level="info")
 
+
+@cli.command("run-http")
+def run_http():
+    """Inicia o servidor MCP em HTTP streamable."""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    from .mcp.http import StreamableHTTPMCPServer
+    import uvicorn
+
+    uvicorn.run(StreamableHTTPMCPServer(runtime).app, host="127.0.0.1", port=8003, log_level="info")
+
 if __name__ == "__main__":
     cli()

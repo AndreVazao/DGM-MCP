@@ -23,6 +23,11 @@ Modo MCP nativo em SSE:
 dgm-mcp run-sse
 ```
 
+Modo MCP nativo em HTTP streamable:
+```bash
+dgm-mcp run-http
+```
+
 ### 2. VS Code + Continue.dev
 Configura o `config.json` do Continue para usar o endpoint do DGM-MCP.
 
