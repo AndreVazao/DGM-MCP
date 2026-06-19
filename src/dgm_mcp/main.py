@@ -94,5 +94,17 @@ def run_stdio():
     from .mcp.stdio import StdioMCPServer
     StdioMCPServer(runtime).serve()
 
+
+@cli.command("run-sse")
+def run_sse():
+    """Inicia o servidor MCP em SSE."""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    from .mcp.sse import SSEMCPServer
+    import uvicorn
+
+    uvicorn.run(SSEMCPServer(runtime).app, host="127.0.0.1", port=8002, log_level="info")
+
 if __name__ == "__main__":
     cli()

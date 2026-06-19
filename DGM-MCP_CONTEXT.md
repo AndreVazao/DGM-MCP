@@ -13,8 +13,8 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 
 ## Estado Atual
 - **Core legado funcional**: Runtime, tools, web e control continuam operacionais.
-- **MCP fase 1-6 parcialmente concluída**: JSON-RPC, tools, resources e prompts já expostos em STDIO.
-- **STDIO em curso**: comando `dgm-mcp run-stdio` disponível para teste local.
+- **MCP fase 1-7 parcialmente concluída**: JSON-RPC, tools, resources, prompts e SSE já expostos.
+- **STDIO e SSE**: comandos `dgm-mcp run-stdio` e `dgm-mcp run-sse` disponíveis para teste local.
 - **Testes locais**: suíte principal verde no ambiente atual.
 
 ## MCP Implementado
@@ -24,12 +24,13 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - `adapter.py`: ponte entre tool runtime e chamadas MCP.
 - `resources.py`: resources e prompts expostos pelo servidor MCP.
 - `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`, `prompts/list` e `prompts/get`.
+- `sse.py`: transporte SSE com endpoint de stream e endpoint de mensagens MCP.
 - Schemas de tools já estão mais restritos, com enums e `additionalProperties: false`.
 
 ## Próximos Passos
-1. Adicionar transporte SSE para clientes remotos.
-2. Adicionar validação oficial com MCP Inspector / Claude Desktop.
-3. Expandir resources e prompts com dados mais ricos.
+1. Adicionar validação oficial com MCP Inspector / Claude Desktop.
+2. Expandir resources e prompts com dados mais ricos.
+3. Melhorar lifecycle e encerramento limpo dos transportes.
 4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
 ## Notas Operacionais

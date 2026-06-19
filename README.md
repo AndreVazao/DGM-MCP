@@ -18,6 +18,11 @@ Modo MCP nativo em STDIO:
 dgm-mcp run-stdio
 ```
 
+Modo MCP nativo em SSE:
+```bash
+dgm-mcp run-sse
+```
+
 ### 2. VS Code + Continue.dev
 Configura o `config.json` do Continue para usar o endpoint do DGM-MCP.
 
