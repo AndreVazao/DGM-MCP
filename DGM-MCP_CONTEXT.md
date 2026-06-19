@@ -3,7 +3,7 @@
 # DGM-MCP CONTEXT
 
 ## Visão Geral
-DGM-MCP é o sucessor evoluído do DGM-HUB. É um servidor MCP (Model Control Protocol) local, focado em dar capacidades reais de engenharia de software a LLMs de forma segura e controlada.
+DGM-MCP é o sucessor evoluído do DGM-HUB. É compatível com MCP (Model Context Protocol), focado em dar capacidades reais de engenharia de software a LLMs de forma segura e controlada.
 
 ## Filosofia
 - Segurança em primeiro lugar
