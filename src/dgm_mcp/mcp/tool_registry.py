@@ -19,8 +19,14 @@ class ToolRegistry:
         self.tools[name] = ToolDefinition(name=name, description=description, inputSchema=input_schema)
 
     def list_tools(self) -> list[dict[str, Any]]:
-        return [tool.__dict__ for tool in self.tools.values()]
+        return [
+            {
+                "name": tool.name,
+                "description": tool.description,
+                "inputSchema": tool.inputSchema,
+            }
+            for tool in self.tools.values()
+        ]
 
     def get(self, name: str) -> ToolDefinition | None:
         return self.tools.get(name)
-

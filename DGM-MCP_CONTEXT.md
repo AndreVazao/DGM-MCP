@@ -24,11 +24,12 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - `adapter.py`: ponte entre tool runtime e chamadas MCP.
 - `resources.py`: resources e prompts expostos pelo servidor MCP.
 - `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`, `prompts/list` e `prompts/get`.
+- Schemas de tools já estão mais restritos, com enums e `additionalProperties: false`.
 
 ## Próximos Passos
-1. Melhorar schemas de input para cada tool.
-2. Adicionar transporte SSE para clientes remotos.
-3. Adicionar validação oficial com MCP Inspector / Claude Desktop.
+1. Adicionar transporte SSE para clientes remotos.
+2. Adicionar validação oficial com MCP Inspector / Claude Desktop.
+3. Expandir resources e prompts com dados mais ricos.
 4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
 ## Notas Operacionais

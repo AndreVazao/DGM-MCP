@@ -34,8 +34,9 @@ class ToolAdapter:
         schemas = {
             "filesystem": {
                 "type": "object",
+                "additionalProperties": False,
                 "properties": {
-                    "action": {"type": "string"},
+                    "action": {"type": "string", "enum": ["read", "write"]},
                     "path": {"type": "string"},
                     "content": {"type": "string"},
                 },
@@ -43,8 +44,9 @@ class ToolAdapter:
             },
             "git": {
                 "type": "object",
+                "additionalProperties": False,
                 "properties": {
-                    "action": {"type": "string"},
+                    "action": {"type": "string", "enum": ["status", "commit"]},
                     "repo_path": {"type": "string"},
                     "message": {"type": "string"},
                 },
@@ -52,6 +54,7 @@ class ToolAdapter:
             },
             "shell": {
                 "type": "object",
+                "additionalProperties": False,
                 "properties": {
                     "command": {"type": "string"},
                     "cwd": {"type": "string"},
@@ -61,8 +64,9 @@ class ToolAdapter:
             },
             "patch": {
                 "type": "object",
+                "additionalProperties": False,
                 "properties": {
-                    "action": {"type": "string"},
+                    "action": {"type": "string", "enum": ["preview_write", "write"]},
                     "file_path": {"type": "string"},
                     "content": {"type": "string"},
                 },
@@ -70,8 +74,9 @@ class ToolAdapter:
             },
             "repo": {
                 "type": "object",
+                "additionalProperties": False,
                 "properties": {
-                    "action": {"type": "string"},
+                    "action": {"type": "string", "enum": ["init", "clone"]},
                     "path": {"type": "string"},
                     "url": {"type": "string"},
                 },
@@ -79,4 +84,3 @@ class ToolAdapter:
             },
         }
         return schemas.get(name, {"type": "object", "properties": {}})
-

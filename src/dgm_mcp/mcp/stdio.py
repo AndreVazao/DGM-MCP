@@ -32,12 +32,16 @@ class StdioMCPServer:
                 result={
                     "protocolVersion": "2024-11-05",
                     "serverInfo": {"name": "dgm-mcp", "version": "0.1.5"},
-                    "capabilities": {"tools": {"listChanged": False}},
+                    "capabilities": {
+                        "tools": {"listChanged": False},
+                        "resources": {"subscribe": False, "listChanged": False},
+                        "prompts": {"listChanged": False},
+                    },
                 },
             ).to_dict()
 
         if request.method == "tools/list":
-            return JSONRPCResponse(id=request.id, result={"tools": self.adapter.list_tools()}).to_dict()
+            return JSONRPCResponse(id=request.id, result={"tools": self.registry.list_tools()}).to_dict()
 
         if request.method == "tools/call":
             params = request.params or {}
