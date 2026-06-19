@@ -6,6 +6,7 @@ from typing import Any
 
 from .adapter import ToolAdapter
 from .jsonrpc import JSONRPCResponse, make_error, parse_request
+from .resources import PromptRegistry, ResourceRegistry
 from .tool_registry import ToolRegistry
 
 
@@ -14,6 +15,8 @@ class StdioMCPServer:
         self.runtime = runtime
         self.adapter = ToolAdapter(runtime)
         self.registry = ToolRegistry()
+        self.resources = ResourceRegistry(runtime)
+        self.prompts = PromptRegistry()
         self._sync_registry()
 
     def _sync_registry(self) -> None:
@@ -43,6 +46,23 @@ class StdioMCPServer:
                 result=self.adapter.call_tool(params.get("name", ""), params.get("arguments")),
             ).to_dict()
 
+        if request.method == "resources/list":
+            return JSONRPCResponse(id=request.id, result={"resources": self.resources.list_resources()}).to_dict()
+
+        if request.method == "resources/read":
+            params = request.params or {}
+            return JSONRPCResponse(id=request.id, result=self.resources.read_resource(params.get("uri", ""))).to_dict()
+
+        if request.method == "prompts/list":
+            return JSONRPCResponse(id=request.id, result={"prompts": self.prompts.list_prompts()}).to_dict()
+
+        if request.method == "prompts/get":
+            params = request.params or {}
+            return JSONRPCResponse(
+                id=request.id,
+                result=self.prompts.get_prompt(params.get("name", ""), params.get("arguments")),
+            ).to_dict()
+
         return make_error(request.id, -32601, f"Method not found: {request.method}").to_dict()
 
     def serve(self) -> None:
@@ -57,4 +77,3 @@ class StdioMCPServer:
                 response = make_error(None, -32603, "Internal error", str(exc)).to_dict()
             sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")
             sys.stdout.flush()
-

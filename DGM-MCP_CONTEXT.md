@@ -13,7 +13,7 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 
 ## Estado Atual
 - **Core legado funcional**: Runtime, tools, web e control continuam operacionais.
-- **MCP fase 1-2 implementada**: JSON-RPC básico, registry de tools e adapter.
+- **MCP fase 1-6 parcialmente concluída**: JSON-RPC, tools, resources e prompts já expostos em STDIO.
 - **STDIO em curso**: comando `dgm-mcp run-stdio` disponível para teste local.
 - **Testes locais**: suíte principal verde no ambiente atual.
 
@@ -22,11 +22,12 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - `jsonrpc.py`: requests, responses e erros JSON-RPC.
 - `tool_registry.py`: catálogo de ferramentas exposto ao protocolo.
 - `adapter.py`: ponte entre tool runtime e chamadas MCP.
-- `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list` e `tools/call`.
+- `resources.py`: resources e prompts expostos pelo servidor MCP.
+- `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`, `prompts/list` e `prompts/get`.
 
 ## Próximos Passos
-1. Expandir o suporte a `resources` e `prompts`.
-2. Melhorar schemas de input para cada tool.
+1. Melhorar schemas de input para cada tool.
+2. Adicionar transporte SSE para clientes remotos.
 3. Adicionar validação oficial com MCP Inspector / Claude Desktop.
 4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
@@ -34,4 +35,4 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - O `pytest.ini` foi adicionado para incluir `src/` automaticamente nos testes.
 - O `ShellTool` foi ajustado para funcionar no Windows nos testes locais.
 - O `tools/call` usa o adapter e preserva a execução via Runtime.
-
+- `resources` e `prompts` agora devolvem config, logs e templates úteis para inspeção.
