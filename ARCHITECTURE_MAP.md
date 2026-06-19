@@ -1,11 +1,10 @@
 # ARCHITECTURE_MAP.md
 
-## Current Architecture Overview (Custom REST)
+## Current Architecture Overview (Transitioning)
 
 ```mermaid
 graph TD
-    CLI[CLI: main.py] --> Bridge[Bridge: MCPServer - FastAPI]
-    Bridge --> Runtime[Core: MCPRuntime]
+    CLI[CLI: main.py] --> Runtime[Core: Runtime]
     Runtime --> Agent[Control: CognitiveAgent]
     Runtime --> Worker[Control: Worker - Thread]
     Runtime --> TM[Control: TaskManager]
@@ -20,76 +19,62 @@ graph TD
     Tools --> Security[Security: PathGuard / Audit]
 ```
 
-### Current Component Roles:
-- **CLI**: Entry point for commands (`start`, `test`, `status`).
-- **Bridge (MCPServer)**: Custom FastAPI server exposing `/mcp/task`. This is NOT a standard MCP server yet.
-- **Runtime**: Central orchestrator initializing all components.
-- **CognitiveAgent**: The "brain" that generates plans (JSON) using LLMs and executes them step-by-step.
-- **Worker**: A background thread that polls for tasks to analyze or execute.
-- **TaskManager**: Simple in-memory store for Tasks.
-- **Tools**: Atomic operations following the `BaseTool` interface.
+## Target Architecture (MCP-Native)
 
----
-
-## Target Architecture (MCP-Compatible)
-
-The goal is to insert a **Standard MCP Protocol Layer** that can handle various transports and speak JSON-RPC 2.0.
+The architecture is designed to support multiple clients via standardized transports, while keeping the core logic isolated.
 
 ```mermaid
 graph TD
-    Client[MCP Client: Claude Desktop, Cursor, etc.] -- Stdio / SSE --> Protocol[MCP Protocol Layer: JSON-RPC]
-
-    subgraph "DGM-MCP Server"
-        Protocol --> Discovery[Tool Discovery: tools/list]
-        Protocol --> Execution[Tool Call: tools/call]
-        Protocol --> Resources[Resources: resources/*]
-        Protocol --> Prompts[Prompts: prompts/*]
-
-        Execution --> Runtime
-        Runtime --> Agent
-        Runtime --> Tools
+    subgraph "Clients"
+        Claude[Claude Desktop]
+        Cursor[Cursor / Windsurf]
+        Custom[Custom Apps]
     end
+
+    subgraph "Transport Layer"
+        Stdio[STDIO Transport]
+        SSE[SSE Transport / FastAPI]
+    end
+
+    subgraph "MCP Protocol Layer"
+        JSONRPC[JSON-RPC 2.0 Engine]
+        Registry[Tool/Resource/Prompt Registry]
+        Adapter[Tool Adapter]
+    end
+
+    subgraph "Core DGM-MCP (Protocol Agnostic)"
+        Runtime[Runtime Orchestrator]
+        Tools[Internal Tools]
+        Security[PathGuard / Audit]
+        Agent[Cognitive Agent]
+    end
+
+    Claude -- stdio --> Stdio
+    Cursor -- sse --> SSE
+    Stdio --> JSONRPC
+    SSE --> JSONRPC
+    JSONRPC --> Registry
+    Registry --> Adapter
+    Adapter --> Runtime
+    Runtime --> Tools
+    Tools --> Security
 ```
 
-### Key Changes:
-1.  **New `mcp` package**: Will house the JSON-RPC engine and message definitions.
-2.  **Transport Layer**: Separate logic for Stdio (local) and SSE (web/remote).
-3.  **Bridge Refactoring**: The current `MCPServer` (FastAPI) will become one of the transports (SSE) and will use the new Protocol Layer.
-4.  **Tool Mapping**: `BaseTool` must expose JSON Schema for MCP discovery.
+### Key Architectural Principles:
 
----
+1.  **Isolation**: The `Core` (Runtime, Tools, Security) has zero knowledge of MCP. It only knows how to execute tasks and enforce security.
+2.  **Standardization**: All communication follows the Model Context Protocol v1.0.
+3.  **Flexibility**: New tools added to `Core` are automatically exposed via the `Registry` and `Adapter`.
+4.  **Transport Independence**: The same protocol logic handles both local (Stdio) and remote (SSE) clients.
 
-## Dependency Map
+## Component Roles in MCP Context:
 
-| Component | Depends On | Stability | Impact of MCP Transition |
-| :--- | :--- | :--- | :--- |
-| **CLI** | Bridge, Runtime | High | Minimal (will support `stdio` mode) |
-| **Bridge** | Runtime, Agent | Low | Major refactor to use Protocol Layer |
-| **Runtime** | Everything | Medium | Moderate (needs to support synchronous tool calls) |
-| **CognitiveAgent** | LLM, Tools, TM | High | Low (logic remains similar, but call interface changes) |
-| **Tools** | PathGuard, Audit | High | Medium (needs JSON Schema metadata) |
-| **Worker** | Runtime, TM | Medium | Low (might become optional for synchronous MCP calls) |
+- **Registry**: The single source of truth for tool schemas. It scans the existing toolset and generates MCP-compatible metadata.
+- **Adapter**: Maps the flattened MCP `call_tool` parameters to the specific keyword arguments required by our internal `execute` methods.
+- **Runtime**: Continues to be the orchestrator for session state, logging, and security context.
 
----
-
-## Migration Strategy
-
-### What stays the same:
-- **Core Logic**: `PathGuard`, `AuditLogger`, `LLMManager`, and the actual `execute` logic of Tools.
-- **Agent Reasoning**: The way `CognitiveAgent` creates plans can remain, though we might expose "Plan Creation" as an MCP Prompt.
-
-### What breaks:
-- **REST API**: `/mcp/task` will be deprecated in favor of standard MCP endpoints.
-- **Tool Initialization**: Tools will need to be registered with the Protocol Layer using their schemas.
-
-### Compatibility Strategy:
-- Maintain the FastAPI server as an **SSE Transport**.
-- Keep `/mcp/task` as a legacy/shim endpoint during the transition.
-- Use a **Protocol Adapter** to bridge MCP Tool Calls to existing `BaseTool.execute`.
-
----
-
-## Rollback Strategy
-1.  **Version Tagging**: Every phase will be tagged in Git.
-2.  **Feature Flags**: Use `config.yaml` to toggle between "Legacy REST" and "MCP Native" modes.
-3.  **Parallel Execution**: Run the new Stdio server while keeping the FastAPI server active on a different port.
+## Migration Status:
+- **Core Logic**: 100% Stable.
+- **REST Bridge**: Deprecated (replaced by SSE).
+- **MCP Layer**: Under implementation (Phase 1-2).
+- **Transports**: Pending (Phase 4 & 7).

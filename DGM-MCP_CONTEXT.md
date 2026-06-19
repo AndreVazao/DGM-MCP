@@ -1,165 +1,54 @@
-# STATUS: PRODUCTION BETA
+# STATUS: ARCHITECTURAL REFACTOR (v0.2.0-alpha)
 
 # DGM-MCP CONTEXT
 
 ## Visão Geral
-DGM-MCP é o sucessor evoluído do DGM-HUB. É compatível com MCP (Model Context Protocol), focado em dar capacidades reais de engenharia de software a LLMs de forma segura e controlada.
+DGM-MCP é um ecossistema para engenharia de software assistida por IA, evoluindo para se tornar um Servidor MCP (Model Context Protocol) nativo e de alta performance.
 
 ## Filosofia
-- Segurança em primeiro lugar
-- Controle humano final (approvals)
-- Transparência total (logs e explicações)
-- Foco em qualidade e boas práticas de engenharia
-- Separação clara entre reasoning e execução
+- **Segurança**: PathGuard e Auditoria em tempo real.
+- **Protocolo**: Aderência total ao padrão MCP v1.0.
+- **Desacoplamento**: O Runtime e as Ferramentas são agnósticos em relação ao protocolo de transporte.
+- **Soberania**: Decisões críticas exigem aprovação humana.
 
-## Fluxo Principal
-1. LLM envia pedido via MCP
-2. TaskManager recebe e prioriza
-3. CognitiveAgent analisa e cria plano
-4. Worker executa o plano passo a passo usando Tools
-5. Quando necessário, pede aprovação humana
-6. Executa alterações apenas após aprovação
+## Nova Estrutura MCP (v0.2.0)
+Estamos a migrar de uma API REST customizada para uma arquitetura de 8 fases:
+1. **JSON-RPC Core**: Protocolo base.
+2. **Tool Registry**: Descoberta dinâmica de ferramentas.
+3. **Tool Invocation**: Execução via adapters.
+4. **STDIO Transport**: Conectividade nativa para Claude Desktop/Cursor.
+5. **Resources**: Acesso a dados (logs, configs).
+6. **Prompts**: Templates reutilizáveis.
+7. **SSE Transport**: Conectividade remota.
+8. **Validation**: Testes oficiais com Claude Desktop.
 
 ## Componentes Chave
 
-### Core
-- ConfigManager
-- Runtime (orquestrador central)
-- Registry (tools e agents)
+### Protocol Layer (mcp/)
+- `jsonrpc.py`: Motor de mensagens.
+- `tool_registry.py`: Catálogo de capacidades.
+- `adapter.py`: Ponte entre o protocolo e a execução.
+
+### Core (core/ & tools/)
+- `Runtime`: Orquestrador de estado e segurança.
+- `Tools`: Implementações atómicas (Git, FS, Shell, Patch).
 
 ### Security
-- PathGuard (restrição de pastas permitidas)
-- Permission System
-
-### Control
-- TaskManager
-- Worker
-- CognitiveAgent (reasoning + planning)
-
-### Tools
-- FilesystemTool
-- GitTool
-- ShellTool (cmd/powershell)
-- TestRunnerTool
-- PatchTool
+- `PathGuard`: Sandbox de sistema de ficheiros.
+- `AuditLogger`: Rastreabilidade total.
 
 ## Status Atual
-- Fase inicial de fundação (MVP)
-- Foco atual: Base sólida + MCP Server funcional
+- **Fase 1-2 em progresso**: Definição de schemas e core JSON-RPC.
+- **Infraestrutura**: Multi-LLM (Claude, GPT, Gemini, etc) está operacional no Core.
+- **Objetivo Imediato**: Fazer o Claude Desktop listar as ferramentas do DGM-MCP via STDIO.
 
-## Próximos Milestones
-1. MCP Server básico funcional
-2. Sistema de aprovação humana
-3. CognitiveAgent v1 (bom reasoning)
-4. Integração com Claude Desktop
-5. Memory / Long-term state
+## Como Contribuir / Usar
+1. Seguir o `MCP_IMPLEMENTATION_ROADMAP.md`.
+2. Garantir que as novas Tools definem o seu `inputSchema` no Registry.
+3. Não introduzir lógica MCP dentro das classes de Tool.
 
-## Status Atual (Fase 8)
-- Estrutura modular sólida
-- Security Layer (PathGuard)
-- Tools: Filesystem, Git, Shell, Patch
-- Sistema de aprovação humana
-- Worker + CognitiveAgent funcionais (com loop de processamento)
-- MCP Server com FastAPI
-- CLI funcional (dgm-mcp start, tools, status, test)
-- Sistema de Memória persistente
+---
 
-## Como Ligar com Ferramentas Externas (Claude Desktop / Cursor / Windsurf)
-
-### Opção Recomendada: MCP Server
-1. Inicia o servidor: `dgm-mcp start`
-2. No Claude Desktop / Cursor, configura o MCP para:
-   - URL: `http://127.0.0.1:8000/mcp/task`
-   - Método: POST
-   - Envia JSON com `"description": "tua tarefa aqui"`
-
-### Exemplo de prompt para Claude:
-```
-Usa o DGM-MCP para:
-1. Analisar a pasta atual
-2. Criar um novo ficheiro chamado example.py
-3. Fazer commit das alterações
-Aprova todas as ações importantes.
-```
-
-## Próximos Passos (Fase 9+)
-- Sistema completo de Patches + Diff
-- Suporte a múltiplos LLMs
-- Interface Web simples
-- Logging avançado + observabilidade
-
-## Fase 11 Status
-- LLM integration completa (ChatGPT, Claude, Grok, Gemini, Ollama)
-- Advanced Patch + Preview System
-- Centralized Logging
-- Plan Execution Engine
-
-## Integração com LLMs Externos (Recomendado)
-
-### Claude Desktop / Cursor / Windsurf
-- URL: `http://127.0.0.1:8000/mcp/task`
-- Método: `POST`
-- Body JSON: `{"description": "tua tarefa", "session_id": "opcional"}`
-
-### VS Code + Continue.dev ou Aider
-Podes configurar o MCP como tool customizada.
-
-### Ollama Local
-Funciona sem API key.
-
-## Integração com LLMs Externos (Recomendado)
-
-### Claude Desktop / Cursor / Windsurf
-- URL: `http://127.0.0.1:8000/mcp/task`
-- Método: `POST`
-- Body JSON: `{"description": "tua tarefa", "session_id": "opcional"}`
-
-### VS Code + Continue.dev ou Aider
-Podes configurar o MCP como tool customizada.
-
-### Ollama Local
-Funciona sem API key.
-
-## Fase 18 — Status Atual (v0.1.5)
-
-- Multi-LLM completo (ChatGPT, Claude, Grok, Gemini, Ollama)
-- Sistema de aprovação rico com preview
-- Worker em thread
-- Observability / Dashboard
-- Sessões de contexto
-- Patch system avançado
-
-**Pronto para integração real com Claude Desktop, Cursor, VS Code, etc.**
-
-## Checklist de Produção (v0.1.4)
-
-- [x] Dynamic LLM Detection (Fase 18)
-- [x] PathGuard + Security
-- [x] Sistema de aprovação humana
-- [x] Worker em thread
-- [x] Patch Tool com preview
-- [x] Logging rico
-- [x] CLI completa (start, test, tools, dashboard)
-- [x] Testes básicos
-- [ ] Integração real com Claude Desktop (testar)
-- [ ] Melhor error recovery
-- [ ] Logging para ficheiro
-
-## Checklist de Produção (v0.1.5)
-
-- [x] Dynamic LLM Detection (Fase 18)
-- [x] PathGuard + Security
-- [x] Sistema de aprovação humana
-- [x] Worker em thread
-- [x] Patch Tool com preview
-- [x] Logging rico
-- [x] CLI completa (start, test, tools, dashboard)
-- [x] Testes básicos
-- [ ] Integração real com Claude Desktop (testar)
-- [ ] Melhor error recovery
-- [ ] Logging para ficheiro
-
-## Fase 18 — Status Atual (Production Ready)
-- Dynamic LLM Detection e Auto-Registration.
-- Comando `status` completo para diagnóstico.
-- Documentação de uso real com Claude Desktop, Cursor, etc.
+## Histórico de Versões
+- **v0.1.5**: Multi-LLM, Dashboard, Async Worker.
+- **v0.2.0 (Alpha)**: Início da transição para MCP Nativo (Standard).

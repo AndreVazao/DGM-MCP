@@ -1,13 +1,16 @@
 # MCP_TOOL_SCHEMAS.md
 
-This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibility with the `tools/list` and `tools/call` methods.
+This document defines the enriched JSON Schemas for DGM-MCP tools, following the latest MCP standards.
 
 ## 1. Filesystem Tool (`filesystem`)
+**Title**: Filesystem Operations
+**Description**: Securely read, write and manipulate files and folders within allowed paths.
 
 ```json
 {
   "name": "filesystem",
-  "description": "Read, write and manipulate files and folders",
+  "title": "Filesystem Operations",
+  "description": "Read and write files within the sandbox.",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -26,6 +29,14 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
       }
     },
     "required": ["action", "path"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "success": { "type": "boolean" },
+      "message": { "type": "string" },
+      "data": { "type": "object" }
+    }
   }
 }
 ```
@@ -33,17 +44,20 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
 ---
 
 ## 2. Git Tool (`git`)
+**Title**: Git Repository Operations
+**Description**: Execute Git commands safely to manage version control.
 
 ```json
 {
   "name": "git",
-  "description": "Execute Git commands safely",
+  "title": "Git Operations",
+  "description": "Safe git operations (status, commit, log).",
   "inputSchema": {
     "type": "object",
     "properties": {
       "action": {
         "type": "string",
-        "enum": ["status", "commit"],
+        "enum": ["status", "commit", "log"],
         "description": "Git action"
       },
       "repo_path": {
@@ -57,6 +71,9 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
       }
     },
     "required": ["action"]
+  },
+  "outputSchema": {
+    "type": "object"
   }
 }
 ```
@@ -64,11 +81,14 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
 ---
 
 ## 3. Shell Tool (`shell`)
+**Title**: System Shell Execution
+**Description**: Execute whitelisted system commands (python, pip, pytest).
 
 ```json
 {
   "name": "shell",
-  "description": "Execute allowed system commands (python, pip, pytest, etc.)",
+  "title": "Shell Execution",
+  "description": "Execute allowed commands in a secure shell environment.",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -88,6 +108,9 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
       }
     },
     "required": ["command"]
+  },
+  "outputSchema": {
+    "type": "object"
   }
 }
 ```
@@ -95,11 +118,14 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
 ---
 
 ## 4. Patch Tool (`patch`)
+**Title**: Precision File Patching
+**Description**: Apply surgical edits using SEARCH/REPLACE blocks.
 
 ```json
 {
   "name": "patch",
-  "description": "Apply precision edits to files using SEARCH/REPLACE blocks",
+  "title": "File Patching",
+  "description": "Apply SEARCH/REPLACE patches to files.",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -120,11 +146,14 @@ This document defines the JSON Schemas for all DGM-MCP tools to ensure compatibi
 ---
 
 ## 5. Repo Tool (`repo`)
+**Title**: Repository Management
+**Description**: High-level repository lifecycle operations (init, clone).
 
 ```json
 {
   "name": "repo",
-  "description": "General repository management (init, clone)",
+  "title": "Repo Management",
+  "description": "Initialize or clone repositories.",
   "inputSchema": {
     "type": "object",
     "properties": {
