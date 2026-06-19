@@ -36,4 +36,4 @@ def test_path_guard_relative_to():
         pg.validate_path("/tmp/safe-secret")
 
     # Note: in real env /tmp/safe might not exist, but resolve(strict=False) handles it
-    assert pg.validate_path("/tmp/safe/file.txt") == Path("/tmp/safe/file.txt")
+    assert pg.validate_path("/tmp/safe/file.txt") == Path("/tmp/safe/file.txt").resolve(strict=False)

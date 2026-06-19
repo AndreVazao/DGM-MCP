@@ -1,4 +1,5 @@
 from .base_tool import BaseTool, ToolResult
+import os
 import shlex
 import subprocess
 import time
@@ -47,8 +48,11 @@ class ShellTool(BaseTool):
                     )
                 else:
                     timeout = kwargs.get("timeout", self.default_timeout)
+                    run_tokens = tokens
+                    if os.name == "nt" and base_command == "echo":
+                        run_tokens = ["cmd", "/c", command]
                     proc = subprocess.run(
-                        tokens,
+                        run_tokens,
                         cwd=safe_cwd,
                         capture_output=True,
                         text=True,

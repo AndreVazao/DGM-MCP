@@ -1,54 +1,37 @@
-# STATUS: ARCHITECTURAL REFACTOR (v0.2.0-alpha)
+# STATUS: MCP TRANSITION IN PROGRESS
 
 # DGM-MCP CONTEXT
 
 ## Visão Geral
-DGM-MCP é um ecossistema para engenharia de software assistida por IA, evoluindo para se tornar um Servidor MCP (Model Context Protocol) nativo e de alta performance.
+DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customizado para um servidor MCP nativo, mantendo o core agnóstico do protocolo.
 
 ## Filosofia
-- **Segurança**: PathGuard e Auditoria em tempo real.
-- **Protocolo**: Aderência total ao padrão MCP v1.0.
-- **Desacoplamento**: O Runtime e as Ferramentas são agnósticos em relação ao protocolo de transporte.
-- **Soberania**: Decisões críticas exigem aprovação humana.
+- **Segurança**: PathGuard e AuditLogger continuam no core.
+- **Protocolo**: A camada MCP fica isolada do Runtime e das Tools.
+- **Desacoplamento**: O core não conhece JSON-RPC nem transport.
+- **Soberania**: A execução continua sujeita a validações e limites do runtime.
 
-## Nova Estrutura MCP (v0.2.0)
-Estamos a migrar de uma API REST customizada para uma arquitetura de 8 fases:
-1. **JSON-RPC Core**: Protocolo base.
-2. **Tool Registry**: Descoberta dinâmica de ferramentas.
-3. **Tool Invocation**: Execução via adapters.
-4. **STDIO Transport**: Conectividade nativa para Claude Desktop/Cursor.
-5. **Resources**: Acesso a dados (logs, configs).
-6. **Prompts**: Templates reutilizáveis.
-7. **SSE Transport**: Conectividade remota.
-8. **Validation**: Testes oficiais com Claude Desktop.
+## Estado Atual
+- **Core legado funcional**: Runtime, tools, web e control continuam operacionais.
+- **MCP fase 1-2 implementada**: JSON-RPC básico, registry de tools e adapter.
+- **STDIO em curso**: comando `dgm-mcp run-stdio` disponível para teste local.
+- **Testes locais**: suíte principal verde no ambiente atual.
 
-## Componentes Chave
+## MCP Implementado
+### `src/dgm_mcp/mcp/`
+- `jsonrpc.py`: requests, responses e erros JSON-RPC.
+- `tool_registry.py`: catálogo de ferramentas exposto ao protocolo.
+- `adapter.py`: ponte entre tool runtime e chamadas MCP.
+- `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list` e `tools/call`.
 
-### Protocol Layer (mcp/)
-- `jsonrpc.py`: Motor de mensagens.
-- `tool_registry.py`: Catálogo de capacidades.
-- `adapter.py`: Ponte entre o protocolo e a execução.
+## Próximos Passos
+1. Expandir o suporte a `resources` e `prompts`.
+2. Melhorar schemas de input para cada tool.
+3. Adicionar validação oficial com MCP Inspector / Claude Desktop.
+4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
-### Core (core/ & tools/)
-- `Runtime`: Orquestrador de estado e segurança.
-- `Tools`: Implementações atómicas (Git, FS, Shell, Patch).
+## Notas Operacionais
+- O `pytest.ini` foi adicionado para incluir `src/` automaticamente nos testes.
+- O `ShellTool` foi ajustado para funcionar no Windows nos testes locais.
+- O `tools/call` usa o adapter e preserva a execução via Runtime.
 
-### Security
-- `PathGuard`: Sandbox de sistema de ficheiros.
-- `AuditLogger`: Rastreabilidade total.
-
-## Status Atual
-- **Fase 1-2 em progresso**: Definição de schemas e core JSON-RPC.
-- **Infraestrutura**: Multi-LLM (Claude, GPT, Gemini, etc) está operacional no Core.
-- **Objetivo Imediato**: Fazer o Claude Desktop listar as ferramentas do DGM-MCP via STDIO.
-
-## Como Contribuir / Usar
-1. Seguir o `MCP_IMPLEMENTATION_ROADMAP.md`.
-2. Garantir que as novas Tools definem o seu `inputSchema` no Registry.
-3. Não introduzir lógica MCP dentro das classes de Tool.
-
----
-
-## Histórico de Versões
-- **v0.1.5**: Multi-LLM, Dashboard, Async Worker.
-- **v0.2.0 (Alpha)**: Início da transição para MCP Nativo (Standard).

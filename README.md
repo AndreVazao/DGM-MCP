@@ -13,6 +13,11 @@ dgm-mcp start
 ```
 Configura o MCP com URL: `http://127.0.0.1:8000/mcp/task`
 
+Modo MCP nativo em STDIO:
+```bash
+dgm-mcp run-stdio
+```
+
 ### 2. VS Code + Continue.dev
 Configura o `config.json` do Continue para usar o endpoint do DGM-MCP.
 

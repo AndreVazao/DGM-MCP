@@ -84,5 +84,15 @@ def web():
     from .web.app import start_web
     start_web()
 
+
+@cli.command("run-stdio")
+def run_stdio():
+    """Inicia o servidor MCP em STDIO."""
+    config = ConfigManager().load()
+    runtime = MCPRuntime(config)
+    runtime.start()
+    from .mcp.stdio import StdioMCPServer
+    StdioMCPServer(runtime).serve()
+
 if __name__ == "__main__":
     cli()
