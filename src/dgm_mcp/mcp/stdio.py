@@ -48,18 +48,21 @@ class StdioMCPServer:
             return requested
         return supported[0]
 
-    def handle(self, payload: dict[str, Any]) -> dict[str, Any]:
+    def handle(self, payload: dict[str, Any]) -> dict[str, Any] | None:
         try:
             request = parse_request(payload)
-        except TypeError:
-            return invalid_request(None).to_dict()
-        except ValueError:
+        except (TypeError, ValueError):
             return invalid_request(None).to_dict()
 
-        if request.id is None and request.method != "initialized":
-            if request.method != "shutdown" and request.method != "initialize":
-                return {}
+        # Handle Notifications (no ID)
+        if request.id is None:
+            if request.method == "initialized":
+                self.state = MCPState.INITIALIZED
+            elif request.method == "notifications/cancelled":
+                pass
+            return None
 
+        # Handle Requests
         if request.method == "initialize":
             self.state = MCPState.INITIALIZING
             params = request.params or {}
@@ -69,7 +72,7 @@ class StdioMCPServer:
                 id=request.id,
                 result={
                     "protocolVersion": self.protocol_version,
-                    "serverInfo": {"name": "dgm-mcp", "version": "0.1.5"},
+                    "serverInfo": {"name": "dgm-mcp", "version": "0.2.0-rc1"},
                     "capabilities": {
                         "tools": {"listChanged": False},
                         "resources": {"subscribe": False, "listChanged": False},
@@ -77,10 +80,6 @@ class StdioMCPServer:
                     },
                 },
             ).to_dict()
-
-        if request.method == "initialized":
-            self.state = MCPState.INITIALIZED
-            return {}
 
         gate = self._ensure_initialized(request)
         if gate is not None:
@@ -135,7 +134,8 @@ class StdioMCPServer:
                     response = parse_error().to_dict()
                 except Exception as exc:
                     response = internal_error(None, str(exc)).to_dict()
-                if response:
+
+                if response is not None:
                     sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")
                     sys.stdout.flush()
         except KeyboardInterrupt:
