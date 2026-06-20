@@ -9,7 +9,8 @@ def test_shutdown_and_notifications():
     runtime.start()
     server = StdioMCPServer(runtime)
 
-    assert server.handle({"jsonrpc": "2.0", "method": "tools/list"}) == {}
+    # Notifications should return None in the new implementation
+    assert server.handle({"jsonrpc": "2.0", "method": "tools/list"}) is None
 
     shutdown = server.handle({"jsonrpc": "2.0", "id": 1, "method": "shutdown"})
     assert shutdown["result"]["ok"] is True

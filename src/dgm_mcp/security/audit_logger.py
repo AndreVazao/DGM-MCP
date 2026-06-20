@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Any
 
 class AuditLogger:
@@ -17,7 +17,7 @@ class AuditLogger:
         details: Optional[dict[str, Any]] = None
     ):
         entry = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "tool": tool,
             "action": action,
             "success": success,

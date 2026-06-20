@@ -30,7 +30,7 @@ def test_initialize_and_initialized_state():
     server = StdioMCPServer(_runtime())
     init = server.handle({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-03-26"}})
     assert init["result"]["protocolVersion"] == "2025-03-26"
-    assert server.handle({"jsonrpc": "2.0", "method": "initialized"}) == {}
+    assert server.handle({"jsonrpc": "2.0", "method": "initialized"}) is None
     listed = server.handle({"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
     assert "tools" in listed["result"]
 
@@ -53,4 +53,4 @@ def test_http_session_headers_and_version_negotiation():
         json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-03-26"}},
     )
     assert response.headers["mcp-session-id"]
-    assert response.headers["mcp-protocol-version"] == "2025-03-26"
+    assert response.headers.get("mcp-protocol-version") == "2025-03-26"
