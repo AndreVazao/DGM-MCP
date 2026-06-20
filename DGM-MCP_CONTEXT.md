@@ -6,16 +6,17 @@
 DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customizado para um servidor MCP nativo, mantendo o core agnóstico do protocolo.
 
 ## Filosofia
-- **Segurança**: PathGuard e AuditLogger continuam no core.
-- **Protocolo**: A camada MCP fica isolada do Runtime e das Tools.
-- **Desacoplamento**: O core não conhece JSON-RPC nem transport.
-- **Soberania**: A execução continua sujeita a validações e limites do runtime.
+- Segurança: PathGuard e AuditLogger continuam no core.
+- Protocolo: A camada MCP fica isolada do Runtime e das Tools.
+- Desacoplamento: O core não conhece JSON-RPC nem transport.
+- Soberania: A execução continua sujeita a validações e limites do runtime.
 
 ## Estado Atual
-- **Core legado funcional**: Runtime, tools, web e control continuam operacionais.
-- **MCP hardening em progresso**: JSON-RPC, lifecycle, schema validation e transports já mais próximos da spec.
-- **STDIO, SSE e HTTP**: comandos `dgm-mcp run-stdio`, `dgm-mcp run-sse` e `dgm-mcp run-http` disponíveis para teste local.
-- **Testes locais**: suíte principal verde no ambiente atual.
+- Core legado funcional: Runtime, tools, web e control continuam operacionais.
+- MCP hardening em progresso: JSON-RPC, lifecycle, schema validation e transports já mais próximos da spec.
+- STDIO, SSE e HTTP: comandos `dgm-mcp run-stdio`, `dgm-mcp run-sse` e `dgm-mcp run-http` disponíveis para teste local.
+- Testes locais: suíte principal verde no ambiente atual.
+- Validação e gaps: relatórios criados para Claude Desktop, MCP Inspector, Cursor, Windsurf e gap final.
 
 ## MCP Implementado
 ### `src/dgm_mcp/mcp/`
@@ -31,8 +32,8 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - O runtime MCP roda em modo silencioso para não contaminar STDIO.
 
 ## Próximos Passos
-1. Validar Claude Desktop, MCP Inspector, Cursor e Windsurf em sessões reais.
-2. Consolidar os relatórios de interoperabilidade e gaps.
+1. Executar validação real com Claude Desktop, MCP Inspector, Cursor e Windsurf.
+2. Consolidar os resultados reais nos relatórios.
 3. Expandir resources e prompts só depois da validação real.
 4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
@@ -41,3 +42,5 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - O `ShellTool` foi ajustado para funcionar no Windows nos testes locais.
 - O `tools/call` usa o adapter e preserva a execução via Runtime.
 - `resources` e `prompts` agora devolvem config, logs e templates úteis para inspeção.
+- Os relatórios de validação vivem na raiz do projeto para consulta rápida.
+

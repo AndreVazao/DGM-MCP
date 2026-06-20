@@ -8,6 +8,7 @@ Date: 2026-06-20
 - MCP Inspector UI mode not validated in a live session.
 - Cursor not validated in a live session.
 - Windsurf not validated in a live session.
+- Repository main branch is synchronized with the compliance hardening commit history.
 
 ## HIGH
 

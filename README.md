@@ -2,7 +2,19 @@
 
 # DGM-MCP
 
-**Sistema de Controlo para LLMs** — Transforma Claude, ChatGPT, Grok, Gemini ou Ollama num engenheiro de software real, com segurança e aprovação humana.
+**Sistema de Controlo para LLMs** - Transforma Claude, ChatGPT, Grok, Gemini ou Ollama num engenheiro de software real, com segurança e aprovação humana.
+
+## Estado Atual
+
+- MCP nativo em STDIO, SSE e HTTP streamable
+- JSON-RPC endurecido com lifecycle real
+- 33 testes locais a passar
+- Relatórios de validação disponíveis em:
+  - [`CLAUDE_DESKTOP_VALIDATION.md`](./CLAUDE_DESKTOP_VALIDATION.md)
+  - [`MCP_INSPECTOR_VALIDATION.md`](./MCP_INSPECTOR_VALIDATION.md)
+  - [`CURSOR_VALIDATION.md`](./CURSOR_VALIDATION.md)
+  - [`WINDSURF_VALIDATION.md`](./WINDSURF_VALIDATION.md)
+  - [`MCP_FINAL_GAP_REPORT.md`](./MCP_FINAL_GAP_REPORT.md)
 
 ## Como Usar com Diferentes Ferramentas
 
@@ -41,7 +53,7 @@ dgm-mcp test
 dgm-mcp web
 ```
 
-O sistema **detecta automaticamente** quais LLMs tens configurados.
+O sistema detecta automaticamente quais LLMs tens configurados.
 
 ## Utilizar com Grok (xAI)
 
@@ -67,14 +79,14 @@ dgm-mcp dashboard
 ```
 
 ## LLMs Suportados
-- **Claude** (melhor qualidade atual)
-- **ChatGPT / Codex**
-- **Grok**
-- **Gemini**
-- **Ollama** (local)
+- Claude
+- ChatGPT / Codex
+- Grok
+- Gemini
+- Ollama (local)
 
 ## Próximos Passos
-- Interface Web
-- Suporte a streaming em tempo real
-- Mais ferramentas (Docker, Database, etc.)
-- Modo agente autónomo
+- Validar com clientes MCP reais
+- Reduzir os gaps do relatório final
+- Só depois considerar novas capacidades MCP
+
