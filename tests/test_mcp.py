@@ -9,6 +9,8 @@ def test_tools_list_and_call():
     runtime.start()
     server = StdioMCPServer(runtime)
 
+    server.handle({"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}})
+    server.handle({"jsonrpc": "2.0", "method": "initialized"})
     listed = server.handle({"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
     assert listed["result"]["tools"]
     assert any(tool["name"] == "shell" for tool in listed["result"]["tools"])

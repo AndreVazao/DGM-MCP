@@ -16,7 +16,13 @@ def test_streamable_http_transport():
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/event-stream")
 
+    client.post(
+        "/mcp",
+        headers={"MCP-Protocol-Version": "2025-06-18"},
+        json={"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}},
+    )
+    client.post("/mcp", headers={"MCP-Protocol-Version": "2025-06-18"}, json={"jsonrpc": "2.0", "method": "initialized"})
+
     post = client.post("/mcp", json={"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
     assert post.status_code == 200
     assert "tools" in post.json()["result"]
-

@@ -16,6 +16,12 @@ def test_sse_transport_basic():
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/event-stream")
 
+    client.post(
+        "/mcp/message",
+        json={"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}},
+    )
+    client.post("/mcp/message", json={"jsonrpc": "2.0", "method": "initialized"})
+
     message = client.post(
         "/mcp/message",
         json={"jsonrpc": "2.0", "id": 1, "method": "tools/list"},

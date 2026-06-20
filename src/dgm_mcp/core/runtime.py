@@ -14,16 +14,17 @@ from .logger import DGMLogger
 from .observability import Observability
 
 class MCPRuntime:
-    def __init__(self, config: MCPConfig):
+    def __init__(self, config: MCPConfig, quiet: bool = False):
         self.config = config
+        self.quiet = quiet
         self.running = False
         self.path_guard = PathGuard(config.allowed_paths)
         self.audit = AuditLogger()
         self.tools = {}
         self.task_manager = TaskManager()
-        self.logger = DGMLogger()
+        self.logger = DGMLogger(quiet=quiet)
         self.observability = Observability()
-        self.llm_manager = LLMManager(config)
+        self.llm_manager = LLMManager(config, quiet=quiet)
         self.agent = None
         self.worker = None
 
@@ -37,8 +38,9 @@ class MCPRuntime:
         for tool in self.tools.values():
             self.agent.register_tool(tool)
 
-        self.worker = Worker(self, self.task_manager)
-        self.worker.start()
+        if not self.quiet:
+            self.worker = Worker(self, self.task_manager)
+            self.worker.start()
 
         # LLMManager already sets the default provider based on config during init
         # but we can force it again if needed.

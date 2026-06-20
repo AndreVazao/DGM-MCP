@@ -89,7 +89,7 @@ def web():
 def run_stdio():
     """Inicia o servidor MCP em STDIO."""
     config = ConfigManager().load()
-    runtime = MCPRuntime(config)
+    runtime = MCPRuntime(config, quiet=True)
     runtime.start()
     from .mcp.stdio import StdioMCPServer
     StdioMCPServer(runtime).serve()
@@ -99,7 +99,7 @@ def run_stdio():
 def run_sse():
     """Inicia o servidor MCP em SSE."""
     config = ConfigManager().load()
-    runtime = MCPRuntime(config)
+    runtime = MCPRuntime(config, quiet=True)
     runtime.start()
     from .mcp.sse import SSEMCPServer
     import uvicorn
@@ -111,7 +111,7 @@ def run_sse():
 def run_http():
     """Inicia o servidor MCP em HTTP streamable."""
     config = ConfigManager().load()
-    runtime = MCPRuntime(config)
+    runtime = MCPRuntime(config, quiet=True)
     runtime.start()
     from .mcp.http import StreamableHTTPMCPServer
     import uvicorn

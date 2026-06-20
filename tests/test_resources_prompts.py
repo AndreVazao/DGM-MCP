@@ -9,6 +9,8 @@ def test_resources_and_prompts():
     runtime.start()
     server = StdioMCPServer(runtime)
 
+    server.handle({"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}})
+    server.handle({"jsonrpc": "2.0", "method": "initialized"})
     resources = server.handle({"jsonrpc": "2.0", "id": 10, "method": "resources/list"})
     assert any(item["uri"] == "dgm://config" for item in resources["result"]["resources"])
 

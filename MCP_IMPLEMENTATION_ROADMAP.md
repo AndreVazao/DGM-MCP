@@ -11,6 +11,9 @@ This roadmap tracks the transition from the custom bridge to a standard MCP serv
 - SSE transport with `/mcp/sse` and `/mcp/message`.
 - Lifecycle support for `shutdown` and JSON-RPC notifications.
 - Streamable HTTP transport with `/mcp`.
+- JSON-RPC parse / invalid request / method not found / invalid params / internal error handling.
+- State machine gating for MCP initialization.
+- Schema validation before tool execution.
 - CLI command: `dgm-mcp run-stdio`.
 - CLI command: `dgm-mcp run-sse`.
 - CLI command: `dgm-mcp run-http`.

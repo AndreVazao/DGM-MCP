@@ -5,8 +5,18 @@ import sys
 from typing import Any
 
 from .adapter import ToolAdapter
-from .jsonrpc import JSONRPCResponse, make_error, parse_request
+from .jsonrpc import (
+    JSONRPCResponse,
+    make_error,
+    internal_error,
+    invalid_params,
+    invalid_request,
+    method_not_found,
+    parse_error,
+    parse_request,
+)
 from .resources import PromptRegistry, ResourceRegistry
+from .state import MCPState
 from .tool_registry import ToolRegistry
 
 
@@ -17,22 +27,48 @@ class StdioMCPServer:
         self.registry = ToolRegistry()
         self.resources = ResourceRegistry(runtime)
         self.prompts = PromptRegistry()
+        self.state = MCPState.CREATED
+        self.protocol_version = "2025-06-18"
         self._sync_registry()
 
     def _sync_registry(self) -> None:
         for tool in self.runtime.tools.values():
             self.registry.register(tool.name, tool.description, self.adapter._schema_for(tool.name))
 
+    def _ensure_initialized(self, request) -> dict[str, Any] | None:
+        if request.method in {"initialize", "shutdown"}:
+            return None
+        if self.state != MCPState.INITIALIZED:
+            return make_error(request.id, -32000, "Server not initialized").to_dict()
+        return None
+
+    def _negotiate_protocol_version(self, requested: str | None) -> str:
+        supported = ["2025-06-18", "2025-03-26", "2024-11-05"]
+        if requested in supported:
+            return requested
+        return supported[0]
+
     def handle(self, payload: dict[str, Any]) -> dict[str, Any]:
-        request = parse_request(payload)
-        if request.id is None and request.method != "shutdown":
-            return {}
+        try:
+            request = parse_request(payload)
+        except TypeError:
+            return invalid_request(None).to_dict()
+        except ValueError:
+            return invalid_request(None).to_dict()
+
+        if request.id is None and request.method != "initialized":
+            if request.method != "shutdown" and request.method != "initialize":
+                return {}
 
         if request.method == "initialize":
+            self.state = MCPState.INITIALIZING
+            params = request.params or {}
+            requested_version = params.get("protocolVersion") if isinstance(params, dict) else None
+            self.protocol_version = self._negotiate_protocol_version(requested_version)
             return JSONRPCResponse(
                 id=request.id,
                 result={
-                    "protocolVersion": "2024-11-05",
+                    "protocolVersion": self.protocol_version,
                     "serverInfo": {"name": "dgm-mcp", "version": "0.1.5"},
                     "capabilities": {
                         "tools": {"listChanged": False},
@@ -42,15 +78,26 @@ class StdioMCPServer:
                 },
             ).to_dict()
 
+        if request.method == "initialized":
+            self.state = MCPState.INITIALIZED
+            return {}
+
+        gate = self._ensure_initialized(request)
+        if gate is not None:
+            return gate
+
         if request.method == "tools/list":
             return JSONRPCResponse(id=request.id, result={"tools": self.registry.list_tools()}).to_dict()
 
         if request.method == "tools/call":
             params = request.params or {}
-            return JSONRPCResponse(
-                id=request.id,
-                result=self.adapter.call_tool(params.get("name", ""), params.get("arguments")),
-            ).to_dict()
+            try:
+                if not isinstance(params, dict):
+                    raise ValueError("params must be an object")
+                result = self.adapter.call_tool(params.get("name", ""), params.get("arguments"))
+                return JSONRPCResponse(id=request.id, result=result).to_dict()
+            except Exception as exc:
+                return invalid_params(request.id, str(exc)).to_dict()
 
         if request.method == "resources/list":
             return JSONRPCResponse(id=request.id, result={"resources": self.resources.list_resources()}).to_dict()
@@ -70,9 +117,10 @@ class StdioMCPServer:
             ).to_dict()
 
         if request.method == "shutdown":
+            self.state = MCPState.SHUTDOWN
             return JSONRPCResponse(id=request.id, result={"ok": True}).to_dict()
 
-        return make_error(request.id, -32601, f"Method not found: {request.method}").to_dict()
+        return method_not_found(request.id).to_dict()
 
     def serve(self) -> None:
         try:
@@ -83,8 +131,10 @@ class StdioMCPServer:
                 try:
                     payload = json.loads(raw)
                     response = self.handle(payload)
+                except json.JSONDecodeError:
+                    response = parse_error().to_dict()
                 except Exception as exc:
-                    response = make_error(None, -32603, "Internal error", str(exc)).to_dict()
+                    response = internal_error(None, str(exc)).to_dict()
                 if response:
                     sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")
                     sys.stdout.flush()

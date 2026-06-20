@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+from jsonschema import validate, ValidationError
 
 
 class ToolAdapter:
@@ -23,6 +24,8 @@ class ToolAdapter:
             return {"isError": True, "content": [{"type": "text", "text": f"Unknown tool: {name}"}]}
 
         args = arguments or {}
+        schema = self._schema_for(name)
+        validate(instance=args, schema=schema)
         result = tool.execute(**args)
         return {
             "isError": not result.success,

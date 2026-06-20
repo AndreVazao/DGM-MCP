@@ -1,6 +1,5 @@
 from typing import Dict, Optional
 from rich.console import Console
-import os
 
 from .base_provider import BaseLLMProvider, LLMResponse
 from .providers.openai_provider import OpenAIProvider
@@ -12,18 +11,20 @@ from ..config.config_manager import MCPConfig
 
 console = Console()
 
+
 class LLMManager:
-    def __init__(self, config: Optional[MCPConfig] = None):
+    def __init__(self, config: Optional[MCPConfig] = None, quiet: bool = False):
         self.config = config
+        self.quiet = quiet
         self.providers: Dict[str, BaseLLMProvider] = {}
         self.current_provider: Optional[BaseLLMProvider] = None
         self._auto_detect_and_register()
 
     def _auto_detect_and_register(self):
-        """Detecta automaticamente quais LLMs estão disponíveis"""
+        """Detecta automaticamente quais LLMs estao disponiveis"""
         candidates = [
-            OpenAIProvider(self.config),      # ChatGPT + Codex
-            AnthropicProvider(self.config),   # Claude
+            OpenAIProvider(self.config),
+            AnthropicProvider(self.config),
             GeminiProvider(self.config),
             GrokProvider(self.config),
             OllamaProvider(self.config),
@@ -32,12 +33,11 @@ class LLMManager:
         for provider in candidates:
             if provider.is_available():
                 self.providers[provider.name.lower()] = provider
-                console.print(f"   ✅ LLM detectado: [green]{provider.name} ({provider.model})[/green]")
+                if not self.quiet:
+                    console.print(f"LLM detectado: {provider.name} ({provider.model})")
 
         if self.providers:
-            # Prioridade: Grok > Claude > ChatGPT > outros
             preferred_order = ["grok", "claude", "chatgpt", "ollama"]
-            # If config has a default_llm, prioritize it
             if self.config and self.config.default_llm.lower() in self.providers:
                 self.set_provider(self.config.default_llm)
             else:
@@ -48,13 +48,15 @@ class LLMManager:
                 else:
                     self.set_provider(list(self.providers.keys())[0])
         else:
-            console.print("[yellow]⚠️ Nenhum LLM encontrado. Configure API keys no .env[/yellow]")
+            if not self.quiet:
+                console.print("Nenhum LLM encontrado. Configure API keys no .env")
 
     def set_provider(self, name: str) -> bool:
         key = name.lower()
         if key in self.providers:
             self.current_provider = self.providers[key]
-            console.print(f"[bold green]🤖 LLM Ativo: {self.current_provider.name}[/bold green]")
+            if not self.quiet:
+                console.print(f"LLM ativo: {self.current_provider.name}")
             return True
         return False
 

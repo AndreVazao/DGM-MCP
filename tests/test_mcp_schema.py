@@ -9,6 +9,8 @@ def test_tool_schema_is_constrained():
     runtime.start()
     server = StdioMCPServer(runtime)
 
+    server.handle({"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}})
+    server.handle({"jsonrpc": "2.0", "method": "initialized"})
     listed = server.handle({"jsonrpc": "2.0", "id": 99, "method": "tools/list"})
     shell_tool = next(tool for tool in listed["result"]["tools"] if tool["name"] == "shell")
 

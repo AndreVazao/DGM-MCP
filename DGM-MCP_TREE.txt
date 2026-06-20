@@ -16,3 +16,5 @@
 ./src/dgm_mcp/tools
 ./src/dgm_mcp/web
 ./tests
+./INSPECTOR_RESULTS.md
+./VALIDATION_GUIDE.md
