@@ -31,9 +31,9 @@ DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customiza
 - O runtime MCP roda em modo silencioso para não contaminar STDIO.
 
 ## Próximos Passos
-1. Validar com MCP Inspector em fluxo completo de handshake.
-2. Validar Claude Desktop com a configuração de STDIO.
-3. Expandir resources e prompts com dados mais ricos.
+1. Validar Claude Desktop, MCP Inspector, Cursor e Windsurf em sessões reais.
+2. Consolidar os relatórios de interoperabilidade e gaps.
+3. Expandir resources e prompts só depois da validação real.
 4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
 
 ## Notas Operacionais
