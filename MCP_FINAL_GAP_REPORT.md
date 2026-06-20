@@ -34,4 +34,5 @@ Date: 2026-06-20
 3. Validate Cursor against the same local server configuration.
 4. Validate Windsurf against the same local server configuration.
 5. Only after those checks, decide whether to retire the legacy bridge.
+6. Keep [`INTEROPERABILITY_MATRIX.md`](./INTEROPERABILITY_MATRIX.md) updated as live validations are completed.
 
