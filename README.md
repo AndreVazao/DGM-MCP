@@ -1,92 +1,54 @@
-# STATUS: RELEASE CANDIDATE (v0.2.0-RC)
-
-# DGM-MCP
+# DGM-MCP (v0.2.0)
 
 **Sistema de Controlo para LLMs** - Transforma Claude, ChatGPT, Grok, Gemini ou Ollama num engenheiro de software real, com segurança e aprovação humana.
 
-## Estado Atual
+## STATUS: CERTIFIED (v0.2.0)
 
-- MCP nativo em STDIO, SSE e HTTP streamable
-- JSON-RPC endurecido com lifecycle real
-- 33 testes locais a passar
-- Relatórios de validação disponíveis em:
-  - [`CLAUDE_DESKTOP_VALIDATION.md`](./CLAUDE_DESKTOP_VALIDATION.md)
-  - [`MCP_INSPECTOR_VALIDATION.md`](./MCP_INSPECTOR_VALIDATION.md)
-  - [`CURSOR_VALIDATION.md`](./CURSOR_VALIDATION.md)
-  - [`WINDSURF_VALIDATION.md`](./WINDSURF_VALIDATION.md)
-  - [`MCP_FINAL_GAP_REPORT.md`](./MCP_FINAL_GAP_REPORT.md)
+DGM-MCP v0.2.0 é um servidor MCP nativo totalmente certificado e pronto para produção.
 
-## Como Usar com Diferentes Ferramentas
+## Características Principais
+- **MCP Nativo**: Suporte completo para STDIO, SSE e HTTP streamable.
+- **Interoperabilidade**: Validado com Claude Desktop, Cursor, Windsurf e MCP Inspector.
+- **Segurança**: `PathGuard` e `AuditLogger` integrados em todas as chamadas.
+- **Recursos e Prompts**: Exposição de logs, métricas e templates de engenharia via MCP.
 
-### 1. Claude Desktop / Cursor / Windsurf
-Inicia o servidor:
+## Relatórios de Certificação
+- [Relatório de Interoperabilidade](./INTEROPERABILITY_CERTIFICATION_REPORT.md)
+- [Relatório de Release Candidate](./RELEASE_CANDIDATE_REPORT.md)
+
+## Como Usar
+
+### 1. Instalação
 ```bash
-dgm-mcp start
+git clone https://github.com/AndreVazao/DGM-MCP.git
+cd DGM-MCP
+pip install -e .
+python scripts/init.py
 ```
-Configura o MCP com URL: `http://127.0.0.1:8000/mcp/task`
 
-Modo MCP nativo em STDIO:
+### 2. Executar Servidor MCP
+Modo STDIO (para Claude Desktop):
 ```bash
 dgm-mcp run-stdio
 ```
 
-Modo MCP nativo em SSE:
+Modo SSE (para integrações web):
 ```bash
 dgm-mcp run-sse
 ```
 
-Modo MCP nativo em HTTP streamable:
+Modo HTTP:
 ```bash
 dgm-mcp run-http
 ```
 
-### 2. VS Code + Continue.dev
-Configura o `config.json` do Continue para usar o endpoint do DGM-MCP.
-
-### 3. Aider ou outras ferramentas
-Usa o MCP Server como backend.
-
-### 4. Modo CLI direto
+### 3. Dashboard e Controlo
 ```bash
-dgm-mcp status
-dgm-mcp test
 dgm-mcp web
 ```
 
-O sistema detecta automaticamente quais LLMs tens configurados.
-
-## Utilizar com Grok (xAI)
-
-1. Obtém a tua API key em https://console.x.ai
-2. Adiciona no `.env`:
-   ```env
-   XAI_API_KEY=xai-...
-   ```
-3. O DGM-MCP vai detetar automaticamente o Grok e colocá-lo como prioridade.
-
-Podes forçar o uso do Grok com:
-```bash
-dgm-mcp start --llm Grok
-```
-
-## Instalação Rápida
-
-```bash
-git clone https://github.com/AndreVazao/DGM-MCP.git
-cd DGM-MCP
-python scripts/init.py
-dgm-mcp dashboard
-```
-
 ## LLMs Suportados
-- Claude
-- ChatGPT / Codex
-- Grok
-- Gemini
-- Ollama (local)
+- Claude, ChatGPT, Grok, Gemini, Ollama.
 
-## Próximos Passos
-- Validar com clientes MCP reais
-- Reduzir os gaps do relatório final
-- Só depois considerar novas capacidades MCP
-
+## Licença
+MIT
