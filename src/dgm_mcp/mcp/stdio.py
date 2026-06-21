@@ -92,7 +92,7 @@ class StdioMCPServer:
                 id=request.id,
                 result={
                     "protocolVersion": self.protocol_version,
-                    "serverInfo": {"name": "dgm-mcp", "version": "0.2.0-rc1"},
+                    "serverInfo": {"name": "dgm-mcp", "version": "0.2.0"},
                     "capabilities": {
                         "tools": {"listChanged": False},
                         "resources": {"subscribe": False, "listChanged": False},
@@ -165,7 +165,8 @@ class StdioMCPServer:
         try:
             for line in sys.stdin:
                 raw = line.strip()
-                if not raw: continue
+                if not raw:
+                    continue
                 try:
                     payload = json.loads(raw)
                     response = self.handle(payload)

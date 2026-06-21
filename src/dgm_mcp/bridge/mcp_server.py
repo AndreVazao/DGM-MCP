@@ -1,4 +1,3 @@
-import json
 from fastapi import FastAPI, Request
 import uvicorn
 from rich.console import Console

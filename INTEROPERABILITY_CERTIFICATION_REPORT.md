@@ -1,4 +1,4 @@
-# INTEROPERABILITY CERTIFICATION REPORT (v0.2.0-RC)
+# INTEROPERABILITY CERTIFICATION REPORT (v0.2.0)
 
 This report summarizes the results of the interoperability tests performed on DGM-MCP with several MCP-compatible clients.
 

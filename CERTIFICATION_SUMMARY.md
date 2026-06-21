@@ -1,7 +1,7 @@
 # DGM-MCP v0.2.0 - Interoperability Certification Summary
 
 Date: 2026-06-21
-Version: v0.2.0-rc1
+Version: v0.2.0
 
 ## Final Classification
 

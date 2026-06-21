@@ -5,7 +5,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any
 from datetime import datetime
-from jsonschema import validate, ValidationError
+from jsonschema import validate
 
 from ..llm.prompts import Prompts
 from .pagination import Paginator

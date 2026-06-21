@@ -1,5 +1,4 @@
 from .base_tool import BaseTool, ToolResult
-from pathlib import Path
 import time
 
 class FilesystemTool(BaseTool):

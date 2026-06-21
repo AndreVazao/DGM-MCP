@@ -63,7 +63,7 @@ def test():
     runtime = MCPRuntime(config)
     runtime.start()
     task = runtime.task_manager.create_task("Teste rápido do sistema")
-    result = runtime.agent.analyze_task(task.id)
+    _ = runtime.agent.analyze_task(task.id)
     console.print("[green]✅ Teste concluído[/green]")
 
 @cli.command()

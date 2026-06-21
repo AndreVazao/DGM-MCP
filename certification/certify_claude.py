@@ -1,7 +1,6 @@
 import json
 import subprocess
 import sys
-import time
 
 def call_mcp(stdin_data):
     process = subprocess.Popen(
@@ -18,10 +17,11 @@ def parse_resps(stdout):
     resps = []
     for line in stdout.strip().split("\n"):
         line = line.strip()
-        if not line: continue
+        if not line:
+            continue
         try:
             resps.append(json.loads(line))
-        except:
+        except Exception:
             continue
     return resps
 
@@ -37,10 +37,10 @@ def main():
     resps = parse_resps(stdout)
     resp_1 = next((r for r in resps if r.get("id") == 1), None)
     if resp_1:
-        print(f"Test 1 (Initialize): PASS")
+        print("Test 1 (Initialize): PASS")
         results.append({"test": "initialize", "status": "PASS", "payload": init_payload, "response": resp_1})
     else:
-        print(f"Test 1 (Initialize): FAIL")
+        print("Test 1 (Initialize): FAIL")
         results.append({"test": "initialize", "status": "FAIL", "payload": init_payload, "response": stdout})
         return
 
@@ -52,10 +52,10 @@ def main():
     resps = parse_resps(stdout)
     resp_2 = next((r for r in resps if r.get("id") == 2), None)
     if resp_2 and 'tools' in resp_2.get('result', {}):
-        print(f"Test 2 (Tools List): PASS")
+        print("Test 2 (Tools List): PASS")
         results.append({"test": "tools/list", "status": "PASS", "payload": list_tools, "response": resp_2})
     else:
-        print(f"Test 2 (Tools List): FAIL")
+        print("Test 2 (Tools List): FAIL")
         results.append({"test": "tools/list", "status": "FAIL", "payload": list_tools, "response": stdout})
 
     # Test 3: Tool Call (shell)
@@ -64,10 +64,10 @@ def main():
     resps = parse_resps(stdout)
     resp_3 = next((r for r in resps if r.get("id") == 3), None)
     if resp_3 and not resp_3.get('result', {}).get('isError'):
-        print(f"Test 3 (Tool Call): PASS")
+        print("Test 3 (Tool Call): PASS")
         results.append({"test": "tools/call", "status": "PASS", "payload": call_shell, "response": resp_3})
     else:
-        print(f"Test 3 (Tool Call): FAIL")
+        print("Test 3 (Tool Call): FAIL")
         results.append({"test": "tools/call", "status": "FAIL", "payload": call_shell, "response": stdout})
 
     # Test 4: Resources List
@@ -76,10 +76,10 @@ def main():
     resps = parse_resps(stdout)
     resp_4 = next((r for r in resps if r.get("id") == 4), None)
     if resp_4 and 'resources' in resp_4.get('result', {}):
-        print(f"Test 4 (Resources List): PASS")
+        print("Test 4 (Resources List): PASS")
         results.append({"test": "resources/list", "status": "PASS", "payload": list_res, "response": resp_4})
     else:
-        print(f"Test 4 (Resources List): FAIL")
+        print("Test 4 (Resources List): FAIL")
         results.append({"test": "resources/list", "status": "FAIL", "payload": list_res, "response": stdout})
 
     # Test 5: Read Resource (dgm://runtime)
@@ -88,10 +88,10 @@ def main():
     resps = parse_resps(stdout)
     resp_5 = next((r for r in resps if r.get("id") == 5), None)
     if resp_5 and 'contents' in resp_5.get('result', {}):
-        print(f"Test 5 (Read Resource): PASS")
+        print("Test 5 (Read Resource): PASS")
         results.append({"test": "resources/read", "status": "PASS", "payload": read_res, "response": resp_5})
     else:
-        print(f"Test 5 (Read Resource): FAIL")
+        print("Test 5 (Read Resource): FAIL")
         results.append({"test": "resources/read", "status": "FAIL", "payload": read_res, "response": stdout})
 
     # Test 6: Prompts List
@@ -100,10 +100,10 @@ def main():
     resps = parse_resps(stdout)
     resp_6 = next((r for r in resps if r.get("id") == 6), None)
     if resp_6 and 'prompts' in resp_6.get('result', {}):
-        print(f"Test 6 (Prompts List): PASS")
+        print("Test 6 (Prompts List): PASS")
         results.append({"test": "prompts/list", "status": "PASS", "payload": list_prompts, "response": resp_6})
     else:
-        print(f"Test 6 (Prompts List): FAIL")
+        print("Test 6 (Prompts List): FAIL")
         results.append({"test": "prompts/list", "status": "FAIL", "payload": list_prompts, "response": stdout})
 
     # Test 7: Get Prompt
@@ -112,10 +112,10 @@ def main():
     resps = parse_resps(stdout)
     resp_7 = next((r for r in resps if r.get("id") == 7), None)
     if resp_7 and 'messages' in resp_7.get('result', {}):
-        print(f"Test 7 (Get Prompt): PASS")
+        print("Test 7 (Get Prompt): PASS")
         results.append({"test": "prompts/get", "status": "PASS", "payload": get_prompt, "response": resp_7})
     else:
-        print(f"Test 7 (Get Prompt): FAIL")
+        print("Test 7 (Get Prompt): FAIL")
         results.append({"test": "prompts/get", "status": "FAIL", "payload": get_prompt, "response": stdout})
 
     # Test 8: Shutdown
@@ -124,10 +124,10 @@ def main():
     resps = parse_resps(stdout)
     resp_8 = next((r for r in resps if r.get("id") == 8), None)
     if resp_8 and resp_8.get('result', {}).get('ok'):
-        print(f"Test 8 (Shutdown): PASS")
+        print("Test 8 (Shutdown): PASS")
         results.append({"test": "shutdown", "status": "PASS", "payload": shutdown, "response": resp_8})
     else:
-        print(f"Test 8 (Shutdown): FAIL")
+        print("Test 8 (Shutdown): FAIL")
         results.append({"test": "shutdown", "status": "FAIL", "payload": shutdown, "response": stdout})
 
     # Save to MD

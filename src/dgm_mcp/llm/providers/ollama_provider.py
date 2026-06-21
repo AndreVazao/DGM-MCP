@@ -1,5 +1,4 @@
 import subprocess
-import os
 from typing import Optional
 from ..base_provider import BaseLLMProvider, LLMResponse
 from ...config.config_manager import MCPConfig
@@ -17,7 +16,7 @@ class OllamaProvider(BaseLLMProvider):
         try:
             result = subprocess.run(["ollama", "list"], capture_output=True, text=True, timeout=3)
             return result.returncode == 0
-        except:
+        except Exception:
             return False
 
     def generate(self, prompt: str, system_prompt: str = None, **kwargs):

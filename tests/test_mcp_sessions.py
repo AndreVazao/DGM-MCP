@@ -1,4 +1,3 @@
-import pytest
 import time
 from dgm_mcp.mcp.session_manager import SessionManager
 from dgm_mcp.mcp.stdio import StdioMCPServer

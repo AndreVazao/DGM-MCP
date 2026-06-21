@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Any, Optional
 
 class LLMResponse:
     def __init__(self, content: str, model: str, success: bool = True):

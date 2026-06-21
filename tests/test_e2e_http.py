@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.config.config_manager import ConfigManager

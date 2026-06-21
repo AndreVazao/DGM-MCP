@@ -60,17 +60,20 @@ def run_test(name, messages, expected_checks=None):
     return True
 
 def check_handshake(resps):
-    if not resps[0] or "result" not in resps[0]: return False
+    if not resps[0] or "result" not in resps[0]:
+        return False
     return True
 
 def check_tools_list(resps):
     # resps[0]: initialize
     # resps[1]: tools/list
-    if len(resps) < 2 or not resps[1] or "result" not in resps[1]: return False
+    if len(resps) < 2 or not resps[1] or "result" not in resps[1]:
+        return False
     return "tools" in resps[1]["result"]
 
 def check_uninitialized_error(resps):
-    if not resps[0] or "error" not in resps[0]: return False
+    if not resps[0] or "error" not in resps[0]:
+        return False
     return resps[0]["error"]["code"] == -32000
 
 def main():

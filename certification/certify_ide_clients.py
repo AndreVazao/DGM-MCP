@@ -17,10 +17,11 @@ def parse_resps(stdout):
     resps = []
     for line in stdout.strip().split("\n"):
         line = line.strip()
-        if not line: continue
+        if not line:
+            continue
         try:
             resps.append(json.loads(line))
-        except:
+        except Exception:
             continue
     return resps
 

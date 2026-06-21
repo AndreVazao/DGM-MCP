@@ -1,6 +1,6 @@
 from __future__ import annotations
 import json
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Dict, TYPE_CHECKING
 from rich.console import Console
 from .approval_manager import ApprovalManager
 from ..llm.prompts import Prompts

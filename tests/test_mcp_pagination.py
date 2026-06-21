@@ -1,6 +1,5 @@
-import pytest
 from dgm_mcp.mcp.pagination import Paginator
-from dgm_mcp.mcp.tool_registry import ToolRegistry, ToolDefinition
+from dgm_mcp.mcp.tool_registry import ToolRegistry
 from dgm_mcp.mcp.resources import ResourceRegistry, PromptRegistry
 from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.config.config_manager import ConfigManager

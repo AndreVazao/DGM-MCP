@@ -28,7 +28,7 @@
     "protocolVersion": "2025-06-18",
     "serverInfo": {
       "name": "dgm-mcp",
-      "version": "0.2.0-rc1"
+      "version": "0.2.0"
     },
     "capabilities": {
       "tools": {
