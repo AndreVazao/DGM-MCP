@@ -119,28 +119,6 @@
         }
       },
       {
-        "name": "shell",
-        "description": "Executa comandos permitidos",
-        "inputSchema": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "command": {
-              "type": "string"
-            },
-            "cwd": {
-              "type": "string"
-            },
-            "timeout": {
-              "type": "integer"
-            }
-          },
-          "required": [
-            "command"
-          ]
-        }
-      },
-      {
         "name": "patch",
         "description": "Cria, visualiza e aplica patches com preview seguro",
         "inputSchema": {
@@ -190,6 +168,28 @@
           },
           "required": [
             "action"
+          ]
+        }
+      },
+      {
+        "name": "shell",
+        "description": "Executa comandos permitidos",
+        "inputSchema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "type": "string"
+            },
+            "cwd": {
+              "type": "string"
+            },
+            "timeout": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "command"
           ]
         }
       }
@@ -257,45 +257,42 @@
   "id": 4,
   "result": {
     "resources": [
-      [
-        {
-          "uri": "dgm://config",
-          "name": "config",
-          "description": "Runtime configuration snapshot",
-          "mimeType": "application/json"
-        },
-        {
-          "uri": "dgm://logs",
-          "name": "logs",
-          "description": "Recent runtime log file",
-          "mimeType": "text/plain"
-        },
-        {
-          "uri": "dgm://metrics",
-          "name": "metrics",
-          "description": "Real-time system performance metrics",
-          "mimeType": "application/json"
-        },
-        {
-          "uri": "dgm://runtime",
-          "name": "runtime",
-          "description": "Runtime engine status and health",
-          "mimeType": "application/json"
-        },
-        {
-          "uri": "dgm://sessions",
-          "name": "sessions",
-          "description": "Active MCP sessions status",
-          "mimeType": "application/json"
-        },
-        {
-          "uri": "dgm://tools",
-          "name": "tools",
-          "description": "List of available tools and their schemas",
-          "mimeType": "application/json"
-        }
-      ],
-      null
+      {
+        "uri": "dgm://config",
+        "name": "config",
+        "description": "Runtime configuration snapshot",
+        "mimeType": "application/json"
+      },
+      {
+        "uri": "dgm://logs",
+        "name": "logs",
+        "description": "Recent runtime log file",
+        "mimeType": "text/plain"
+      },
+      {
+        "uri": "dgm://metrics",
+        "name": "metrics",
+        "description": "Real-time system performance metrics",
+        "mimeType": "application/json"
+      },
+      {
+        "uri": "dgm://runtime",
+        "name": "runtime",
+        "description": "Runtime engine status and health",
+        "mimeType": "application/json"
+      },
+      {
+        "uri": "dgm://sessions",
+        "name": "sessions",
+        "description": "Active MCP sessions status",
+        "mimeType": "application/json"
+      },
+      {
+        "uri": "dgm://tools",
+        "name": "tools",
+        "description": "List of available tools and their schemas",
+        "mimeType": "application/json"
+      }
     ]
   }
 }
@@ -352,25 +349,22 @@
   "id": 6,
   "result": {
     "prompts": [
-      [
-        {
-          "name": "system_engineer",
-          "description": "Base system prompt for the engineering agent",
-          "arguments": []
-        },
-        {
-          "name": "task_analysis",
-          "description": "Prompt template for planning a task",
-          "arguments": [
-            {
-              "name": "task_description",
-              "description": "Detailed description of the task to analyze",
-              "required": true
-            }
-          ]
-        }
-      ],
-      null
+      {
+        "name": "system_engineer",
+        "description": "Base system prompt for the engineering agent",
+        "arguments": []
+      },
+      {
+        "name": "task_analysis",
+        "description": "Prompt template for planning a task",
+        "arguments": [
+          {
+            "name": "task_description",
+            "description": "Detailed description of the task to analyze",
+            "required": true
+          }
+        ]
+      }
     ]
   }
 }

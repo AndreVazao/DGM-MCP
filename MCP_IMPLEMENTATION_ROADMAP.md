@@ -1,42 +1,25 @@
-# MCP_IMPLEMENTATION_ROADMAP.md
+# MCP IMPLEMENTATION ROADMAP
 
-This roadmap tracks the transition from the custom bridge to a standard MCP server.
+## Phase 1: Foundation (COMPLETED)
+- JSON-RPC primitives.
+- Tool registry.
+- STDIO transport.
 
-## Implemented So Far
-- JSON-RPC request/response primitives.
-- Tool registry and MCP adapter.
-- STDIO transport with `initialize`, `tools/list`, and `tools/call`.
-- Resources and prompts with `resources/list`, `resources/read`, `prompts/list`, and `prompts/get`.
-- Constrained tool schemas with enums and `additionalProperties: false`.
-- SSE transport with `/mcp/sse` and `/mcp/message`.
-- Lifecycle support for `shutdown` and JSON-RPC notifications.
-- Streamable HTTP transport with `/mcp`.
-- JSON-RPC parse / invalid request / method not found / invalid params / internal error handling.
-- State machine gating for MCP initialization.
-- Schema validation before tool execution.
-- CLI command: `dgm-mcp run-stdio`.
-- CLI command: `dgm-mcp run-sse`.
-- CLI command: `dgm-mcp run-http`.
+## Phase 2: Production Readiness (COMPLETED)
+- SSE and HTTP transports.
+- Lifecycle support.
+- Schema validation.
+- Metrics & Observability.
 
-## Next Phases
-### Phase 5: Resources
-Goal: expose logs, configs, and file contents as MCP resources.
+## Phase 2.5: MCP Certification (COMPLETED)
+- Repository hygiene (logs in .gitignore).
+- Certification framework (`certification/`).
+- Real client validation (Claude, Cursor, Windsurf, Inspector).
+- Interoperability & Release Candidate reports.
 
-### Phase 6: Prompts
-Goal: expose reusable prompt templates through MCP.
+## Phase 3: Distributed Orchestration (PLANNED)
+- Multi-agent coordination via MCP.
+- Remote resource federation.
 
-### Phase 7: SSE Transport
-Goal: add remote communication for web clients and integrations.
-
-### Phase 8: Validation
-Goal: validate the MCP flow end-to-end with Claude Desktop / MCP Inspector.
-
-## Current Priorities
-1. Validate with a real MCP client.
-2. Add richer resources and prompt templates.
-3. Decide when the legacy bridge can be deprecated safely.
-
-## Architectural Constraints
-1. The Runtime and Tools stay protocol-agnostic.
-2. MCP logic lives only in `src/dgm_mcp/mcp/`.
-3. The adapter remains the only bridge between protocol and tool execution.
+## Phase 4: Legacy Cleanup (v0.3.0)
+- Deprecate and remove `src/dgm_mcp/bridge/`.

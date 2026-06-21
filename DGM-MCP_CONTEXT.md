@@ -1,46 +1,26 @@
-# STATUS: RELEASE CANDIDATE
+# STATUS: CERTIFIED (v0.2.0)
 
 # DGM-MCP CONTEXT
 
 ## Visão Geral
-DGM-MCP está a evoluir de um sistema de controlo para LLMs com bridge customizado para um servidor MCP nativo, mantendo o core agnóstico do protocolo.
+DGM-MCP completou a transição para um servidor MCP nativo certificado (Fase 2.5). O sistema está congelado para novas funcionalidades e focado em estabilidade.
 
-## Filosofia
-- Segurança: PathGuard e AuditLogger continuam no core.
-- Protocolo: A camada MCP fica isolada do Runtime e das Tools.
-- Desacoplamento: O core não conhece JSON-RPC nem transport.
-- Soberania: A execução continua sujeita a validações e limites do runtime.
+## Estado Atual (v0.2.0)
+- **Certificação**: Interoperabilidade validada com os principais clientes MCP.
+- **Protocolo**: Handshake, lifecycle e tratamentos de erro JSON-RPC 2.0 endurecidos.
+- **Transports**: STDIO, SSE e HTTP operacionais.
+- **Camada de Dados**: Tools, Resources e Prompts totalmente expostos.
+- **Higiene**: Repositório limpo, logs ignorados pelo git, estrutura de certificação estabelecida.
 
-## Estado Atual
-- Core legado funcional: Runtime, tools, web e control continuam operacionais.
-- MCP hardening em progresso: JSON-RPC, lifecycle, schema validation e transports já mais próximos da spec.
-- STDIO, SSE e HTTP: comandos `dgm-mcp run-stdio`, `dgm-mcp run-sse` e `dgm-mcp run-http` disponíveis para teste local.
-- Testes locais: suíte principal verde no ambiente atual.
-- Validação e gaps: relatórios criados para Claude Desktop, MCP Inspector, Cursor, Windsurf e gap final.
+## Arquitetura
+- O core continua agnóstico (`src/dgm_mcp/core/`).
+- O adaptador MCP (`src/dgm_mcp/mcp/adapter.py`) é o ponto único de integração.
+- A segurança (`PathGuard`) é aplicada em tempo de execução no core.
 
-## MCP Implementado
-### `src/dgm_mcp/mcp/`
-- `jsonrpc.py`: requests, responses e erros JSON-RPC.
-- `tool_registry.py`: catálogo de ferramentas exposto ao protocolo.
-- `adapter.py`: ponte entre tool runtime e chamadas MCP.
-- `resources.py`: resources e prompts expostos pelo servidor MCP.
-- `stdio.py`: servidor MCP via STDIO com `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`, `prompts/list` e `prompts/get`.
-- `sse.py`: transporte SSE com endpoint de stream e endpoint de mensagens MCP.
-- `http.py`: transporte HTTP streamable com endpoint MCP oficial.
-- Schemas de tools já estão mais restritos, com enums e `additionalProperties: false`.
-- O lifecycle já trata `shutdown` e ignora notificações sem `id`.
-- O runtime MCP roda em modo silencioso para não contaminar STDIO.
-
-## Próximos Passos
-1. Executar validação real com Claude Desktop, MCP Inspector, Cursor e Windsurf.
-2. Consolidar os resultados reais nos relatórios.
-3. Expandir resources e prompts só depois da validação real.
-4. Planear substituição gradual do bridge antigo quando o caminho MCP estiver estável.
+## Roadmap
+- v0.2.0: Lançamento oficial (MCP Nativo).
+- v0.3.0: Remoção completa do bridge legado e expansão de resources.
 
 ## Notas Operacionais
-- O `pytest.ini` foi adicionado para incluir `src/` automaticamente nos testes.
-- O `ShellTool` foi ajustado para funcionar no Windows nos testes locais.
-- O `tools/call` usa o adapter e preserva a execução via Runtime.
-- `resources` e `prompts` agora devolvem config, logs e templates úteis para inspeção.
-- Os relatórios de validação vivem na raiz do projeto para consulta rápida.
-
+- Usar `dgm-mcp run-stdio` para integração com IDEs e Desktop apps.
+- Consultar `certification/` para templates de validação.
