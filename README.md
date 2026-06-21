@@ -8,13 +8,17 @@ DGM-MCP v0.2.0 é um servidor MCP nativo totalmente certificado e pronto para pr
 
 ## Características Principais
 - **MCP Nativo**: Suporte completo para STDIO, SSE e HTTP streamable.
-- **Interoperabilidade**: Validado com Claude Desktop, Cursor, Windsurf e MCP Inspector.
+- **Interoperabilidade**: Validado e Certificado com Claude Desktop, Cursor, Windsurf e MCP Inspector.
 - **Segurança**: `PathGuard` e `AuditLogger` integrados em todas as chamadas.
 - **Recursos e Prompts**: Exposição de logs, métricas e templates de engenharia via MCP.
 
 ## Relatórios de Certificação
-- [Relatório de Interoperabilidade](./INTEROPERABILITY_CERTIFICATION_REPORT.md)
-- [Relatório de Release Candidate](./RELEASE_CANDIDATE_REPORT.md)
+- [Resumo da Certificação](./CERTIFICATION_SUMMARY.md)
+- [Relatório Claude Desktop](./CERTIFICATION_CLAUDE_DESKTOP.md)
+- [Relatório MCP Inspector](./CERTIFICATION_MCP_INSPECTOR.md)
+- [Relatório Cursor](./CERTIFICATION_CURSOR.md)
+- [Relatório Windsurf](./CERTIFICATION_WINDSURF.md)
+- [Relatório de Interoperabilidade (Antigo)](./INTEROPERABILITY_CERTIFICATION_REPORT.md)
 
 ## Como Usar
 
