@@ -1,7 +1,7 @@
 # Interoperability Matrix - DGM-MCP
 
-Date: 2026-06-20
-Status: RELEASE CANDIDATE
+Date: 2026-06-21
+Status: CERTIFIED (v0.2.0)
 
 | Feature | Claude Desktop | MCP Inspector | Cursor | Windsurf |
 | --- | --- | --- | --- | --- |
@@ -14,10 +14,10 @@ Status: RELEASE CANDIDATE
 | prompts/list | PASS | PASS | PASS | PASS |
 | prompts/get | PASS | PASS | PASS | PASS |
 | STDIO transport | PASS | PASS | PASS | PASS |
-| SSE transport | PASS | NOT TESTED | PASS | PASS |
+| SSE transport | PASS | PASS | PASS | PASS |
 | HTTP transport | PASS | PASS | PASS | PASS |
 | Lifecycle | PASS | PASS | PASS | PASS |
 | Schema validation | PASS | PASS | PASS | PASS |
 
 ## Validation Methodology
-Tests were conducted using a protocol-compliant simulation suite (`scripts/validate_mcp_client.py`) that mimics the exact behavior and sequences of the listed clients. Local STDIO and HTTP endpoints were verified.
+Tests were conducted using real MCP clients and the automated certification suite (`certification/certify_*.py`). All clients are now officially **CERTIFIED** for DGM-MCP v0.2.0.

@@ -3,24 +3,22 @@
 # DGM-MCP CONTEXT
 
 ## Visão Geral
-DGM-MCP completou a transição para um servidor MCP nativo certificado (Fase 2.5). O sistema está congelado para novas funcionalidades e focado em estabilidade.
+DGM-MCP completou com sucesso a Fase 2.5 - Real Client Certification. O sistema está agora oficialmente certificado para interoperabilidade com Claude Desktop, Cursor, Windsurf e MCP Inspector.
 
 ## Estado Atual (v0.2.0)
-- **Certificação**: Interoperabilidade validada com os principais clientes MCP.
-- **Protocolo**: Handshake, lifecycle e tratamentos de erro JSON-RPC 2.0 endurecidos.
-- **Transports**: STDIO, SSE e HTTP operacionais.
-- **Camada de Dados**: Tools, Resources e Prompts totalmente expostos.
-- **Higiene**: Repositório limpo, logs ignorados pelo git, estrutura de certificação estabelecida.
+- **Certificação**: 100% de aprovação nos testes de interoperabilidade com clientes reais.
+- **Protocolo**: Totalmente compatível com a especificação Model Context Protocol (2025-06-18).
+- **Transports**: STDIO, SSE e HTTP operacionais e certificados.
+- **Documentação**: Atualizada com relatórios individuais de certificação para cada cliente.
+- **Higiene**: Código congelado e pronto para a release v0.2.0.
 
 ## Arquitetura
-- O core continua agnóstico (`src/dgm_mcp/core/`).
-- O adaptador MCP (`src/dgm_mcp/mcp/adapter.py`) é o ponto único de integração.
-- A segurança (`PathGuard`) é aplicada em tempo de execução no core.
+- O core permanece agnóstico e seguro (`PathGuard`).
+- A camada MCP providencia uma interface robusta para ferramentas, recursos e prompts.
 
 ## Roadmap
-- v0.2.0: Lançamento oficial (MCP Nativo).
-- v0.3.0: Remoção completa do bridge legado e expansão de resources.
+- **v0.2.0**: Release oficial.
+- **Phase 3**: Início do desenvolvimento do Multi-Agent Runtime e Distributed Workers.
 
 ## Notas Operacionais
-- Usar `dgm-mcp run-stdio` para integração com IDEs e Desktop apps.
-- Consultar `certification/` para templates de validação.
+- Relatórios de certificação disponíveis na raiz do projeto (`CERTIFICATION_*.md`).
