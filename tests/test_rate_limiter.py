@@ -1,4 +1,3 @@
-import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from dgm_mcp.web.rate_limiter import RateLimitMiddleware
