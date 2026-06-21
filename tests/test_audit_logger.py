@@ -1,7 +1,6 @@
 import json
 import os
 import unittest
-from pathlib import Path
 from dgm_mcp.security.audit_logger import AuditLogger
 
 class TestAuditLogger(unittest.TestCase):
