@@ -2,7 +2,6 @@ from rich.console import Console
 from rich.table import Table
 from datetime import datetime
 from typing import Dict, List
-import time
 
 console = Console()
 

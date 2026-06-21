@@ -28,10 +28,6 @@ class StreamableHTTPMCPServer:
             protocol_version = request.headers.get("MCP-Protocol-Version")
             session_id = request.headers.get("MCP-Session-Id")
             if payload.get("method") == "initialize":
-                requested = None
-                params = payload.get("params")
-                if isinstance(params, dict):
-                    requested = params.get("protocolVersion")
                 response = self.core.handle(payload)
                 self.session_id = session_id or str(uuid.uuid4())
                 if response:

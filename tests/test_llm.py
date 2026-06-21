@@ -1,7 +1,5 @@
 import unittest
-import os
 from dgm_mcp.llm.llm_manager import LLMManager
-from dgm_mcp.llm.base_provider import LLMResponse
 
 class TestLLMManager(unittest.TestCase):
     def test_manager_init(self):

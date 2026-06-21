@@ -1,6 +1,6 @@
 from __future__ import annotations
 import base64
-from typing import Any, TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence
 
 T = TypeVar("T")
 

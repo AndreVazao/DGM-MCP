@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock
 from dgm_mcp.tools.shell_tool import ShellTool
 from dgm_mcp.security.path_guard import PathGuard

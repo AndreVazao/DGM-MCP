@@ -2,7 +2,7 @@ from pathlib import Path
 import yaml
 import os
 from pydantic import BaseModel
-from typing import Optional, Any, Dict
+from typing import Optional, Dict
 
 class MCPConfig(BaseModel):
     allowed_paths: list[str] = ["./", "../projects", "."]

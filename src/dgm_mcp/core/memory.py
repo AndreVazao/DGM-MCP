@@ -16,7 +16,7 @@ class Memory:
         if self.memory_path.exists():
             try:
                 return json.loads(self.memory_path.read_text(encoding="utf-8"))
-            except:
+            except Exception:
                 return {}
         return {}
 

@@ -18,7 +18,7 @@ def test_stdio():
     try:
         resp = json.loads(stdout.strip())
         return "PASS" if resp.get("id") == 1 else "FAIL"
-    except:
+    except Exception:
         return "FAIL"
 
 def test_http():

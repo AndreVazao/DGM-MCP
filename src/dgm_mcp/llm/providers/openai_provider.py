@@ -19,7 +19,7 @@ class OpenAIProvider(BaseLLMProvider):
     def is_available(self) -> bool:
         api_key = (self.config.openai_key if self.config else None) or os.getenv("OPENAI_API_KEY")
         try:
-            import openai
+            import openai  # noqa: F401
             return bool(api_key)
         except ImportError:
             return False

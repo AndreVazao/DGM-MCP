@@ -1,4 +1,4 @@
-# Release Readiness Audit - DGM-MCP v0.2.0-RC
+# Release Readiness Audit - DGM-MCP v0.2.0
 
 Date: 2026-06-20
 Auditor: Jules (AI Software Engineer)

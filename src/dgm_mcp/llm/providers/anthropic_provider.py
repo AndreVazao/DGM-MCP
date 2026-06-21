@@ -19,7 +19,7 @@ class AnthropicProvider(BaseLLMProvider):
     def is_available(self) -> bool:
         api_key = (self.config.anthropic_key if self.config else None) or os.getenv("ANTHROPIC_API_KEY")
         try:
-            import anthropic
+            import anthropic  # noqa: F401
             return bool(api_key)
         except ImportError:
             return False

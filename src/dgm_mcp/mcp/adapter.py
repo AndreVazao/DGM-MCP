@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
-from jsonschema import validate, ValidationError
+from jsonschema import validate
 
 
 class ToolAdapter:

@@ -1,6 +1,6 @@
 # RELEASE CANDIDATE REPORT (v0.2.0)
 
-## Version: 0.2.0-RC1
+## Version: 0.2.0
 ## Status: READY FOR RELEASE
 
 DGM-MCP has reached the MCP Certification phase. All core functionalities are frozen and validated.
