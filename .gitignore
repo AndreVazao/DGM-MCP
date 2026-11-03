@@ -9,4 +9,5 @@ build/
 *.egg-info/
 audit.log
 logs/
+backups/
 *.log

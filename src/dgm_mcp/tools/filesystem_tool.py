@@ -1,11 +1,13 @@
-from .base_tool import BaseTool, ToolResult
 import time
+
+from .base_tool import BaseTool, ToolResult
+
 
 class FilesystemTool(BaseTool):
     name = "filesystem"
     description = "Ler, escrever e manipular ficheiros e pastas"
 
-    def execute(self, action: str, path: str, content: str = None, **kwargs) -> ToolResult:
+    def execute(self, action: str, path: str, content: str | None = None, **kwargs) -> ToolResult:
         start_time = time.time()
         success = False
         error = None
@@ -25,9 +27,13 @@ class FilesystemTool(BaseTool):
                     result = ToolResult(success=False, message="Ficheiro não encontrado")
 
             elif action == "write":
-                safe_path.parent.mkdir(parents=True, exist_ok=True)
-                safe_path.write_text(content or "", encoding="utf-8")
-                result = ToolResult(success=True, message="Ficheiro escrito com sucesso")
+                max_bytes = getattr(self, "max_write_bytes", None)
+                if max_bytes is not None and len((content or "").encode("utf-8")) > max_bytes:
+                    result = ToolResult(success=False, message="Conteudo excede o limite configurado")
+                else:
+                    safe_path.parent.mkdir(parents=True, exist_ok=True)
+                    safe_path.write_text(content or "", encoding="utf-8")
+                    result = ToolResult(success=True, message="Ficheiro escrito com sucesso")
 
             else:
                 result = ToolResult(success=False, message=f"Ação desconhecida: {action}")
@@ -36,7 +42,7 @@ class FilesystemTool(BaseTool):
             if not success:
                 error = result.message
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - filesystem tool boundary returns and audits all operational failures
             error = str(e)
             result = ToolResult(success=False, message=error)
             success = False

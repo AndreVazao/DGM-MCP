@@ -1,9 +1,12 @@
-from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.config.config_manager import ConfigManager
+from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.mcp.stdio import StdioMCPServer
+
 
 def test_mcp_metrics_collection():
     config = ConfigManager().load()
+    config.mcp_default_role = "admin"
+    config.mcp_high_risk_enabled = True
     runtime = MCPRuntime(config)
     runtime.start()
     server = StdioMCPServer(runtime)

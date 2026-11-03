@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+import re
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
-from datetime import datetime
+
 from jsonschema import validate
 
 from ..llm.prompts import Prompts
@@ -68,12 +70,15 @@ class ResourceRegistry:
 
     def read_resource(self, uri: str) -> dict[str, Any]:
         if uri == "dgm://config":
+            config_payload = self.runtime.config.model_dump()
+            if self.runtime.config.mcp_sanitize_resources:
+                config_payload = self._sanitize_mapping(config_payload)
             return {
                 "contents": [
                     {
                         "uri": uri,
                         "mimeType": "application/json",
-                        "text": self.runtime.config.model_dump_json(indent=2),
+                        "text": json.dumps(config_payload, indent=2),
                     }
                 ]
             }
@@ -81,6 +86,8 @@ class ResourceRegistry:
         if uri == "dgm://logs":
             log_path = Path("logs") / "dgm_mcp.log"
             text = log_path.read_text(encoding="utf-8") if log_path.exists() else ""
+            if self.runtime.config.mcp_sanitize_resources:
+                text = self._sanitize_text(text)
             return {
                 "contents": [
                     {
@@ -160,6 +167,38 @@ class ResourceRegistry:
             }
 
         raise KeyError(f"Unknown resource: {uri}")
+
+    def _sanitize_mapping(self, value: Any) -> Any:
+        if isinstance(value, dict):
+            result = {}
+            for key, item in value.items():
+                if self._is_secret_key(str(key)):
+                    result[key] = "[configured]" if item else None
+                else:
+                    result[key] = self._sanitize_mapping(item)
+            return result
+        if isinstance(value, list):
+            return [self._sanitize_mapping(item) for item in value]
+        return value
+
+    def _sanitize_text(self, text: str) -> str:
+        sanitized = text
+        sanitized = re.sub(
+            r"(?i)(api[_-]?key|token|secret|password|authorization|cookie)(\s*[=:]\s*)[^\s,}]+",
+            r"\1\2[REDACTED]",
+            sanitized,
+        )
+        sanitized = re.sub(
+            r"(?i)(bearer\s+)[A-Za-z0-9._~+/-]+=*",
+            r"\1[REDACTED]",
+            sanitized,
+        )
+        sanitized = re.sub(r"sk-[A-Za-z0-9_-]{12,}", "sk-[REDACTED]", sanitized)
+        return sanitized
+
+    def _is_secret_key(self, key: str) -> bool:
+        lowered = key.lower()
+        return any(marker in lowered for marker in ["key", "token", "secret", "password", "cookie"])
 
 
 class PromptRegistry:
