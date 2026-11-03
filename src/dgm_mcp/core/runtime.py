@@ -56,6 +56,9 @@ class MCPRuntime:
             RepoTool(self.path_guard, self.audit),
         ]
         for tool in tools:
+            if hasattr(tool, "max_write_bytes") or tool.name == "filesystem":
+                tool.max_write_bytes = self.config.max_file_write_bytes
+        for tool in tools:
             self.tools[tool.name] = tool
             self.logger.success(f"Tool carregada: {tool.name}")
 

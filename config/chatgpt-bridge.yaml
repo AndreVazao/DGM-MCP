@@ -1,0 +1,64 @@
+allowed_paths:
+  - 'C:\ProgramasGodMode\DGM-MAT'
+  - 'C:\ProgramasGodMode\DGM-MCP'
+  - 'C:\ProgramasGodMode\DGM-HUB'
+
+max_workers: 1
+log_level: INFO
+enable_approval: true
+default_llm: "Ollama"
+ollama_model: "llama3.2"
+max_tool_execution_seconds: 30
+max_file_write_bytes: 2000000
+
+mcp_auth_required: true
+mcp_default_role: "developer"
+mcp_allow_role_header: false
+mcp_high_risk_enabled: false
+mcp_sanitize_resources: true
+
+roles:
+  reader:
+    - filesystem
+    - git
+  developer:
+    - filesystem
+    - git
+    - patch
+  admin:
+    - filesystem
+    - git
+    - patch
+    - shell
+    - repo
+
+tool_action_permissions:
+  reader:
+    filesystem:
+      - read
+    git:
+      - status
+  developer:
+    filesystem:
+      - read
+      - write
+    git:
+      - status
+    patch:
+      - preview_write
+      - write
+  admin:
+    filesystem:
+      - read
+      - write
+    git:
+      - status
+      - commit
+    patch:
+      - preview_write
+      - write
+    shell:
+      - execute
+    repo:
+      - init
+      - clone

@@ -53,7 +53,7 @@ class StdioMCPServer:
             return requested
         return supported[0]
 
-    def handle(self, payload: dict[str, Any], session_id: str | None = None) -> dict[str, Any] | None:
+    def handle(self, payload: dict[str, Any], session_id: str | None = None, role: str | None = None) -> dict[str, Any] | None:
         self.runtime.observability.record_mcp_request()
         try:
             request = parse_request(payload)
@@ -119,7 +119,7 @@ class StdioMCPServer:
             try:
                 start_time = time.time()
                 tool_name = params.get("name", "")
-                result = self.adapter.call_tool(tool_name, params.get("arguments"))
+                result = self.adapter.call_tool(tool_name, params.get("arguments"), role=role)
                 latency = time.time() - start_time
                 self.runtime.observability.record_tool_call(tool_name, latency=latency, success=not result.get("isError", False))
                 return JSONRPCResponse(id=request.id, result=result).to_dict()

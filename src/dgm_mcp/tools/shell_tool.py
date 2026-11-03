@@ -12,8 +12,6 @@ class ShellTool(BaseTool):
     description = "Executa comandos permitidos"
 
     ALLOWED_COMMANDS = {
-        "python",
-        "pip",
         "pytest",
         "black",
         "ruff",

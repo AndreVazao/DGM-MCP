@@ -42,6 +42,6 @@ def test_shell_tool_timeout():
     from unittest.mock import patch
 
     with patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="sleep 60", timeout=30)):
-        result = tool.execute("python -c 'import time; time.sleep(60)'")
+        result = tool.execute("pytest --version")
         assert result.success is False
         assert "Timeout" in result.message

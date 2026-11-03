@@ -5,6 +5,8 @@ from dgm_mcp.mcp.stdio import StdioMCPServer
 
 def test_tools_list_and_call():
     config = ConfigManager().load()
+    config.mcp_default_role = "admin"
+    config.mcp_high_risk_enabled = True
     runtime = MCPRuntime(config)
     runtime.start()
     server = StdioMCPServer(runtime)

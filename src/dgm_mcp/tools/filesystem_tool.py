@@ -25,9 +25,13 @@ class FilesystemTool(BaseTool):
                     result = ToolResult(success=False, message="Ficheiro não encontrado")
 
             elif action == "write":
-                safe_path.parent.mkdir(parents=True, exist_ok=True)
-                safe_path.write_text(content or "", encoding="utf-8")
-                result = ToolResult(success=True, message="Ficheiro escrito com sucesso")
+                max_bytes = getattr(self, "max_write_bytes", None)
+                if max_bytes is not None and len((content or "").encode("utf-8")) > max_bytes:
+                    result = ToolResult(success=False, message="Conteudo excede o limite configurado")
+                else:
+                    safe_path.parent.mkdir(parents=True, exist_ok=True)
+                    safe_path.write_text(content or "", encoding="utf-8")
+                    result = ToolResult(success=True, message="Ficheiro escrito com sucesso")
 
             else:
                 result = ToolResult(success=False, message=f"Ação desconhecida: {action}")
