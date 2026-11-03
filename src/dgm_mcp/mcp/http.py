@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import uuid
+import json
 import secrets
+import uuid
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -27,7 +28,7 @@ class StreamableHTTPMCPServer:
                 return auth_error
             try:
                 payload = await request.json()
-            except Exception:
+            except (json.JSONDecodeError, UnicodeDecodeError):
                 return JSONResponse(parse_error().to_dict())
             protocol_version = request.headers.get("MCP-Protocol-Version")
             session_id = request.headers.get("MCP-Session-Id")

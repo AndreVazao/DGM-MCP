@@ -8,18 +8,18 @@ from typing import Any
 from .adapter import ToolAdapter
 from .jsonrpc import (
     JSONRPCResponse,
-    make_error,
     internal_error,
     invalid_params,
     invalid_request,
+    make_error,
     method_not_found,
     parse_error,
     parse_request,
 )
 from .resources import PromptRegistry, ResourceRegistry
+from .session_manager import SessionManager
 from .state import MCPState
 from .tool_registry import ToolRegistry
-from .session_manager import SessionManager
 
 
 class StdioMCPServer:
@@ -123,7 +123,7 @@ class StdioMCPServer:
                 latency = time.time() - start_time
                 self.runtime.observability.record_tool_call(tool_name, latency=latency, success=not result.get("isError", False))
                 return JSONRPCResponse(id=request.id, result=result).to_dict()
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - protocol boundary converts tool failures to JSON-RPC errors
                 self.runtime.observability.record_mcp_error()
                 return invalid_params(request.id, str(exc)).to_dict()
 
@@ -172,7 +172,7 @@ class StdioMCPServer:
                     response = self.handle(payload)
                 except json.JSONDecodeError:
                     response = parse_error().to_dict()
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001 - keep the stdio transport alive after an unexpected request failure
                     response = internal_error(None, str(exc)).to_dict()
                 if response is not None:
                     sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")

@@ -5,8 +5,8 @@ from fastapi.testclient import TestClient
 from dgm_mcp.config.config_manager import MCPConfig
 from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.mcp.http import StreamableHTTPMCPServer
-from dgm_mcp.mcp.stdio import StdioMCPServer
 from dgm_mcp.mcp.sse import SSEMCPServer
+from dgm_mcp.mcp.stdio import StdioMCPServer
 
 
 def initialized_server(config: MCPConfig) -> StdioMCPServer:

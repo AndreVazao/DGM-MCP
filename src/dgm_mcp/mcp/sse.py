@@ -4,7 +4,7 @@ import secrets
 from typing import Any
 
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from .stdio import StdioMCPServer
 

@@ -1,8 +1,9 @@
-from pathlib import Path
-import yaml
 import os
+from pathlib import Path
+
+import yaml
 from pydantic import BaseModel
-from typing import Optional, Dict
+
 
 class MCPConfig(BaseModel):
     allowed_paths: list[str] = ["./", "../projects", "."]
@@ -13,12 +14,12 @@ class MCPConfig(BaseModel):
     ollama_model: str = "llama3.2"
     ollama_url: str = "http://localhost:11434"
     max_tool_execution_seconds: int = 30
-    openai_key: Optional[str] = None
-    anthropic_key: Optional[str] = None
-    google_key: Optional[str] = None
-    xai_key: Optional[str] = None
+    openai_key: str | None = None
+    anthropic_key: str | None = None
+    google_key: str | None = None
+    xai_key: str | None = None
     mcp_auth_required: bool = False
-    mcp_api_key: Optional[str] = None
+    mcp_api_key: str | None = None
     mcp_default_role: str = "developer"
     mcp_allow_role_header: bool = False
     mcp_high_risk_enabled: bool = False
@@ -26,12 +27,12 @@ class MCPConfig(BaseModel):
     max_file_write_bytes: int = 2_000_000
 
     # RBAC: role -> list of tool names
-    roles: Dict[str, list[str]] = {
+    roles: dict[str, list[str]] = {
         "reader": ["filesystem"],
         "developer": ["filesystem", "git", "patch"],
         "admin": ["filesystem", "git", "patch", "shell", "repo"]
     }
-    tool_action_permissions: Dict[str, Dict[str, list[str]]] = {
+    tool_action_permissions: dict[str, dict[str, list[str]]] = {
         "reader": {
             "filesystem": ["read"],
             "git": ["status"],

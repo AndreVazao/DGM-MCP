@@ -1,11 +1,13 @@
-from .base_tool import BaseTool, ToolResult
 import time
+
+from .base_tool import BaseTool, ToolResult
+
 
 class FilesystemTool(BaseTool):
     name = "filesystem"
     description = "Ler, escrever e manipular ficheiros e pastas"
 
-    def execute(self, action: str, path: str, content: str = None, **kwargs) -> ToolResult:
+    def execute(self, action: str, path: str, content: str | None = None, **kwargs) -> ToolResult:
         start_time = time.time()
         success = False
         error = None
@@ -40,7 +42,7 @@ class FilesystemTool(BaseTool):
             if not success:
                 error = result.message
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - filesystem tool boundary returns and audits all operational failures
             error = str(e)
             result = ToolResult(success=False, message=error)
             success = False

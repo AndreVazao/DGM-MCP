@@ -1,17 +1,18 @@
 from ..config.config_manager import MCPConfig
-from ..security.path_guard import PathGuard
-from ..security.audit_logger import AuditLogger
-from ..tools.filesystem_tool import FilesystemTool
-from ..tools.git_tool import GitTool
-from ..tools.shell_tool import ShellTool
-from ..tools.patch_tool import PatchTool
-from ..tools.repo_tool import RepoTool
+from ..control.cognitive_agent import CognitiveAgent
 from ..control.task_manager import TaskManager
 from ..control.worker import Worker
-from ..control.cognitive_agent import CognitiveAgent
 from ..llm.llm_manager import LLMManager
+from ..security.audit_logger import AuditLogger
+from ..security.path_guard import PathGuard
+from ..tools.filesystem_tool import FilesystemTool
+from ..tools.git_tool import GitTool
+from ..tools.patch_tool import PatchTool
+from ..tools.repo_tool import RepoTool
+from ..tools.shell_tool import ShellTool
 from .logger import DGMLogger
 from .observability import Observability
+
 
 class MCPRuntime:
     def __init__(self, config: MCPConfig, quiet: bool = False):

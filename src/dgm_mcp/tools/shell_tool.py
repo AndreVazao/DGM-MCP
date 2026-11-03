@@ -1,26 +1,27 @@
-from .base_tool import BaseTool, ToolResult
 import os
 import shlex
 import subprocess
 import time
-from typing import Optional
-from ..security.path_guard import PathGuard
+
 from ..security.audit_logger import AuditLogger
+from ..security.path_guard import PathGuard
+from .base_tool import BaseTool, ToolResult
+
 
 class ShellTool(BaseTool):
     name = "shell"
     description = "Executa comandos permitidos"
 
-    ALLOWED_COMMANDS = {
+    ALLOWED_COMMANDS = frozenset({
         "pytest",
         "black",
         "ruff",
         "dir",
         "ls",
         "echo",
-    }
+    })
 
-    def __init__(self, path_guard: PathGuard, audit: Optional[AuditLogger] = None, default_timeout: int = 30):
+    def __init__(self, path_guard: PathGuard, audit: AuditLogger | None = None, default_timeout: int = 30):
         super().__init__(path_guard, audit)
         self.default_timeout = default_timeout
 
@@ -55,7 +56,8 @@ class ShellTool(BaseTool):
                         capture_output=True,
                         text=True,
                         timeout=timeout,
-                        shell=False
+                        shell=False,
+                        check=False,
                     )
 
                     result = ToolResult(
@@ -76,7 +78,7 @@ class ShellTool(BaseTool):
             error = "Timeout"
             result = ToolResult(success=False, message=error)
             success = False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - shell tool boundary returns and audits operational failures
             error = str(e)
             result = ToolResult(success=False, message=error)
             success = False

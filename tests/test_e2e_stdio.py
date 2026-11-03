@@ -1,6 +1,7 @@
-from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.config.config_manager import ConfigManager
+from dgm_mcp.core.runtime import MCPRuntime
 from dgm_mcp.mcp.stdio import StdioMCPServer
+
 
 def test_full_mcp_lifecycle_stdio():
     config = ConfigManager().load()

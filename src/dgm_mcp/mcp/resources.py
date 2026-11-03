@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
-from datetime import datetime
+
 from jsonschema import validate
 
 from ..llm.prompts import Prompts

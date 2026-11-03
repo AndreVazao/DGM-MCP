@@ -1,11 +1,13 @@
-from unittest.mock import MagicMock
-from dgm_mcp.tools.shell_tool import ShellTool
-from dgm_mcp.security.path_guard import PathGuard
 from pathlib import Path
+from unittest.mock import MagicMock
+
+from dgm_mcp.security.path_guard import PathGuard
+from dgm_mcp.tools.shell_tool import ShellTool
+
 
 def test_shell_tool_allowed_command():
     pg = MagicMock(spec=PathGuard)
-    pg.validate_path.return_value = Path(".").resolve()
+    pg.validate_path.return_value = Path.cwd()
 
     tool = ShellTool(pg)
     result = tool.execute("echo 'hello'")
@@ -15,7 +17,7 @@ def test_shell_tool_allowed_command():
 
 def test_shell_tool_disallowed_command():
     pg = MagicMock(spec=PathGuard)
-    pg.validate_path.return_value = Path(".").resolve()
+    pg.validate_path.return_value = Path.cwd()
 
     tool = ShellTool(pg)
     result = tool.execute("rm -rf /")
@@ -25,7 +27,7 @@ def test_shell_tool_disallowed_command():
 
 def test_shell_tool_empty_command():
     pg = MagicMock(spec=PathGuard)
-    pg.validate_path.return_value = Path(".").resolve()
+    pg.validate_path.return_value = Path.cwd()
 
     tool = ShellTool(pg)
     result = tool.execute("")
@@ -35,7 +37,7 @@ def test_shell_tool_empty_command():
 
 def test_shell_tool_timeout():
     pg = MagicMock(spec=PathGuard)
-    pg.validate_path.return_value = Path(".").resolve()
+    pg.validate_path.return_value = Path.cwd()
 
     tool = ShellTool(pg)
     import subprocess
